@@ -287,6 +287,20 @@ def main() -> None:
     errors = ch[~ch.correct][["text", "label", "verdict", "risk", "tests"]]
     errors["label"] = errors.label.map({1: "scam", 0: "safe"})
 
+    # Fairness: false-alarm rate per language for EVERY system, at its own flag threshold.
+    lang_groups = {"English": ["en"], "Hinglish": ["hinglish"], "Hindi": ["hi"],
+                   "Other code-mixed": ["bn_en", "mr_en", "ta_en", "te_en"]}
+    fair_rows = []
+    safe_mask = test.label.to_numpy() == 0
+    for name, sc in scores.items():
+        t = results["systems"][name]["threshold"]
+        row = {"system": name}
+        for g, langs in lang_groups.items():
+            m = safe_mask & test.language.isin(langs).to_numpy()
+            row[f"{g} FPR (n={int(m.sum())})"] = round(float((sc["test"][m] >= t).mean()), 3) if m.sum() else None
+        fair_rows.append(row)
+    fairness = pd.DataFrame(fair_rows)
+
     cat_syn, conf_syn = category_accuracy(test[test.source == "synthetic"])
     cat_ch, conf_ch = category_accuracy(ch)
     xs = cross_source(d)
@@ -345,6 +359,12 @@ def main() -> None:
         "### By language (test). Check for unfair false alarms on Hindi/Hinglish",
         "",
         md_table(by_lang),
+        "",
+        "### False alarms by language, every system (genuine test messages only)",
+        "",
+        "Small n means large uncertainty: with 12 genuine Hindi messages, one error moves the rate by 8 points.",
+        "",
+        md_table(fairness),
         "",
         "### By scam category (synthetic test scams only, as other sources have no categories)",
         "",

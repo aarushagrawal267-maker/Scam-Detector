@@ -3,7 +3,7 @@
 *Draft v0.1, 17 Nov 2026. Author: [student name], [school], [city], India. AI-assistance statement: the first implementation and this draft were produced with an AI coding assistant; [describe your own contributions here]. Sections marked **[FUTURE]** describe work not yet done and must not be presented as results.*
 
 ## Abstract
-Older adults in India are frequent targets of SMS and WhatsApp scams written in English, Hindi and code-mixed Hinglish. Public spam datasets are mostly English, old and foreign. We build an explainable detector that combines a TF-IDF + logistic-regression classifier with 22 multilingual red-flag rules and offline link analysis, and outputs a three-level verdict (SCAM / SUSPICIOUS / LIKELY SAFE) with plain-language reasons. Using leakage-free, template-grouped splits of three public datasets (one real English, one template-generated Indian, one LLM-generated multilingual Indian), the deployed system reaches 96.6% recall and 90.2% precision (false-positive rate 3.6%) on 1,161 held-out messages, at about 2 ms per message. On 70 hand-written challenge cases it catches 33/38 scams with no false alarms, but only 4/9 deliberately disguised scams. A cross-dataset experiment shows that a model trained only on English UK/Singapore SMS catches 27% of Indian-style scams, versus 95% after adding diverse Indian examples. Templated Indian data yields a perfect in-distribution score but little transfer. False-positive rates are markedly higher for Hindi (25%) and Hinglish (20%) than English (0.9%). These results are on public and synthetic data only; real-world performance remains to be measured.
+Older adults in India are frequent targets of SMS and WhatsApp scams written in English, Hindi and code-mixed Hinglish. Public spam datasets are mostly English, old and foreign. We build an explainable detector that combines a TF-IDF + logistic-regression classifier with 22 multilingual red-flag rules and offline link analysis, and outputs a three-level verdict (SCAM / SUSPICIOUS / LIKELY SAFE) with plain-language reasons. Using leakage-free, template-grouped splits of three public datasets (one real English, one template-generated Indian, one LLM-generated multilingual Indian), the deployed system reaches 96.6% recall and 90.2% precision (false-positive rate 3.6%) on 1,161 held-out messages, at about 2 ms per message. On 70 hand-written challenge cases it catches 33/38 scams with no false alarms, but only 4/9 deliberately disguised scams. A cross-dataset experiment shows that a model trained only on English UK/Singapore SMS catches 27% of Indian-style scams, versus 95% after adding diverse Indian examples. Templated Indian data yields a perfect in-distribution score but little transfer. False-positive rates are markedly higher for Hindi (25%) and Hinglish (20%) than English (0.9%), and this gap persists for every model tested, including a fine-tuned Indian-language transformer (MuRIL), which did not outperform the simple model overall. These results are on public and synthetic data only; real-world performance remains to be measured.
 
 ## 1. Introduction
 [Problem: scale of scam messages in India, with *verified* statistics and citations from official sources (I4C / NCRB / RBI annual reports). **Do not add numbers you have not verified.**]
@@ -47,7 +47,9 @@ See `DATA_CARD.md`. Three sources: UCI (real, English, 5,105 after de-duplicatio
 | TF-IDF + LogReg | 0.916 | 0.969 | 0.030 | 0.989 |
 | **TF-IDF + LogReg + rules (deployed)** | **0.902** | **0.966** | **0.036** | **0.988** |
 | MiniLM embeddings + LogReg | 0.826 | 0.969 | 0.069 | 0.968 |
-| MuRIL fine-tuned | see `reports/RESULTS.md` | | | |
+| MuRIL fine-tuned (2 epochs, CPU) | 0.844 | 0.973 | 0.061 | 0.986 |
+
+MuRIL reached the highest test recall but nearly doubled the false-positive rate, raised 5/32 false alarms on the challenge set (deployed: 0), and was ~15× slower (30.5 vs ~2 ms per message) and ~950× larger.
 
 **5.2 Challenge set (n = 70).** Model alone: 29/38 scams, 0 false alarms. Deployed hybrid: 33/38 scams, 0/32 false alarms; 14/14 hard negatives correct; 4/9 adversarial scams caught. Misses: punctuated "O.T.P", "the code that came on your phone", CVV described without the word (English and Hindi), and a friendly job-scam opener. **This supports H3.**
 
@@ -61,14 +63,14 @@ See `DATA_CARD.md`. Three sources: UCI (real, English, 5,105 after de-duplicatio
 
 Training with CloveAI gives AP = 1.000 on CloveAI's own test split, but challenge-set recall of only 0.263, so **templated data inflates in-distribution scores without transferring**. **This supports H1 and H2.**
 
-**5.4 Fairness across languages.** False-positive rate: English 0.009, Hinglish 0.20, Hindi 0.25 (12 genuine Hindi messages), other code-mixed varieties 0.08–0.50 (n ≤ 13 genuine each). Recall was ≥ 0.92 in all languages.
+**5.4 Fairness across languages.** Deployed system false-positive rate: English 0.009, Hinglish 0.20, Hindi 0.25 (12 genuine Hindi messages), other code-mixed varieties 0.08–0.50 (n ≤ 13 genuine each). Recall was ≥ 0.92 in all languages. **The gap appears in every system tested** (`reports/RESULTS.md`, "False alarms by language"), including MuRIL, which was pre-trained on Indian languages (Hindi FPR 0.50, Hinglish 0.30). The disparity is therefore likely driven by the training data (few genuine non-English examples, with different label balance per language) rather than by model choice.
 
 **5.5 Scam type.** Correct type for 56/112 caught synthetic scams and 26/33 caught challenge scams; most errors were "type unclear" rather than a wrong type.
 
 **5.6 Cost.** Deployed system: ~2 ms per message on a laptop CPU, 1 MB. MiniLM: ~7 ms, 471 MB.
 
 ## 6. Discussion
-- The simple, explainable model was competitive with larger multilingual models on this data, so model size is not the bottleneck; **data is**.
+- The simple, explainable model was competitive with larger multilingual models on this data (MuRIL: AP 0.986 vs 0.989, but more false alarms), so model size is not the bottleneck; **data is**. MuRIL was trained on CPU for only 2 epochs without hyper-parameter search; a GPU run with tuning may do better and is part of future work.
 - Feature inspection revealed shortcuts (`http` vs `https`, British SMS words, a Devanagari character), consistent with the language-dependent false-positive rates.
 - Rules contributed recall on unseen phrasing and supplied the plain-language explanations users see.
 

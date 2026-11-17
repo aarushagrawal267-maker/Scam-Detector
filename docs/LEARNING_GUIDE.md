@@ -363,7 +363,15 @@ A **sentence embedding** model turns a whole message into 384 numbers that captu
 **MuRIL** (Google) is a BERT model pre-trained on 17 Indian languages *including transliterated text* (Hindi written in English letters), which is exactly what Hinglish scams are. **Fine-tuning** means continuing to train *all* of its 237 million weights on our labelled messages for a couple of passes (epochs), with a small learning rate (3e-5) so it adjusts rather than forgets. On a laptop CPU this is slow (about an hour here); on a free Colab T4 GPU, a few minutes.
 
 ### 12.3 Why compare?
-To show the fancy model is worth its cost, or isn't. See `reports/RESULTS.md` §1–2: the bigger models are **not automatically better** on this data, and they are 470–950× larger and slower. With small, synthetic data, the simple model + rules is the better engineering choice today. Re-run the comparison once you have real data.
+To show the fancy model is worth its cost, or isn't. Results (test set, `reports/RESULTS.md`):
+
+| Model | Recall | False alarms (FPR) | Challenge false alarms | Speed | Size |
+|---|---|---|---|---|---|
+| **TF-IDF + LogReg + rules (deployed)** | 96.6% | **3.6%** | **0 / 32** | **~2 ms** | **1 MB** |
+| MiniLM embeddings + LogReg | 96.9% | 6.9% | 3 / 32 | ~7 ms | 471 MB |
+| MuRIL fine-tuned (37 min on CPU) | **97.3%** | 6.1% | 5 / 32 | ~30 ms | 950 MB |
+
+MuRIL catches a few more test scams but nearly doubles false alarms, and is 15× slower and ~950× bigger. Notice its flag threshold was only **0.03**: fine-tuned transformers are often *over-confident* (probabilities pushed to 0 or 1), so a fair comparison must tune each model's threshold separately, as `evaluate.py` does. **With small, synthetic data, the simple model + rules is the better engineering choice today.** Re-run the comparison (on a Colab GPU, with a few learning rates/epochs) once you have real data.
 
 ---
 
@@ -375,7 +383,7 @@ All numbers: `reports/RESULTS.md` (re-generate with `python -m training.evaluate
 
 **Challenge set (70 hand-written cases):** caught **33/38 scams**, **0/32 false alarms**; **all 14** scary-looking genuine messages correctly left green; but only **4/9 disguised scams** caught. The misses: "O.T.P" with dots, "the code that came on your phone", the CVV described without the word (English and Hindi), and a friendly-sounding job scam.
 
-**Fairness by language (test):** false-alarm rate English **0.9%**, Hinglish **20%**, Hindi **25%** (only 12 genuine Hindi messages: 3 false alarms). **This is the biggest weakness.** Hindi-speaking seniors, the very users the project is for, would see more false 🟡 warnings. The cause is probably partly the data (Hindi examples are few and skewed) and partly the model learning "Hindi letters = scam".
+**Fairness by language (test):** false-alarm rate English **0.9%**, Hinglish **20%**, Hindi **25%** (only 12 genuine Hindi messages: 3 false alarms). **This is the biggest weakness.** Hindi-speaking seniors, the very users the project is for, would see more false 🟡 warnings. Crucially, **every model shows the same gap**, even MuRIL, which was built for Indian languages (Hindi 50%, Hinglish 30%). So it isn't a "wrong model" problem; it's a **data** problem: too few genuine Hindi/Hinglish examples, and a different scam/safe balance per language. A bigger model can't fix missing data.
 
 **Scam type shown:** right for **56/112** caught synthetic scams and **26/33** challenge scams. Most errors are "Type unclear", not wrong types.
 

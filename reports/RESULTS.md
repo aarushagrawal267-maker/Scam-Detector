@@ -13,6 +13,8 @@ Test rows: 1161 (294 scam/spam). Challenge set: 70 hand-written cases (38 scams)
 | TF-IDF + LogReg + rules (deployed)              |            0.337 |       0.902 |    0.966 | 0.933 | 0.036 | 0.034 | 0.988 |     0.993 |
 | Multilingual MiniLM embeddings + LogReg         |            0.328 |       0.826 |    0.969 | 0.892 | 0.069 | 0.031 | 0.968 |     0.986 |
 | Multilingual MiniLM embeddings + LogReg + rules |            0.438 |       0.832 |    0.963 | 0.893 | 0.066 | 0.037 | 0.968 |     0.986 |
+| MuRIL fine-tuned                                |            0.03  |       0.844 |    0.973 | 0.904 | 0.061 | 0.027 | 0.986 |     0.993 |
+| MuRIL fine-tuned + rules                        |            0.085 |       0.835 |    0.963 | 0.894 | 0.065 | 0.037 | 0.984 |     0.992 |
 
 ![precision-recall](figures/precision_recall.png)
 
@@ -25,6 +27,8 @@ Test rows: 1161 (294 scam/spam). Challenge set: 70 hand-written cases (38 scams)
 | TF-IDF + LogReg + rules (deployed)              |                   0.868 |                0     |              5 |              0 |
 | Multilingual MiniLM embeddings + LogReg         |                   0.868 |                0.094 |              5 |              3 |
 | Multilingual MiniLM embeddings + LogReg + rules |                   0.921 |                0.094 |              3 |              3 |
+| MuRIL fine-tuned                                |                   0.842 |                0.156 |              6 |              5 |
+| MuRIL fine-tuned + rules                        |                   0.868 |                0.125 |              5 |              4 |
 
 ## 3. Deployed system in detail
 
@@ -58,6 +62,20 @@ Three-way verdicts on the test set:
 | mr_en      |  22 |      10 |    1     |                0.083 |       0.909 |
 | te_en      |  14 |       9 |    1     |                0.4   |       0.818 |
 | ta_en      |  12 |       4 |    1     |                0.5   |       0.5   |
+
+### False alarms by language, every system (genuine test messages only)
+
+Small n means large uncertainty: with 12 genuine Hindi messages, one error moves the rate by 8 points.
+
+| system                                          |   English FPR (n=769) |   Hinglish FPR (n=50) |   Hindi FPR (n=12) |   Other code-mixed FPR (n=36) |
+|:------------------------------------------------|----------------------:|----------------------:|-------------------:|------------------------------:|
+| Rules only                                      |                 0.02  |                  0.26 |              0.167 |                         0.278 |
+| TF-IDF + LogReg                                 |                 0.005 |                  0.16 |              0.333 |                         0.278 |
+| TF-IDF + LogReg + rules (deployed)              |                 0.009 |                  0.2  |              0.25  |                         0.306 |
+| Multilingual MiniLM embeddings + LogReg         |                 0.026 |                  0.32 |              0.333 |                         0.556 |
+| Multilingual MiniLM embeddings + LogReg + rules |                 0.026 |                  0.28 |              0.333 |                         0.528 |
+| MuRIL fine-tuned                                |                 0.021 |                  0.3  |              0.5   |                         0.444 |
+| MuRIL fine-tuned + rules                        |                 0.03  |                  0.32 |              0.333 |                         0.361 |
 
 ### By scam category (synthetic test scams only, as other sources have no categories)
 
@@ -143,9 +161,9 @@ Same TF-IDF + LogReg model (C=10), trained on growing data, threshold 0.5.
 
 | system                          |   ms per message |
 |:--------------------------------|-----------------:|
-| Rules only                      |             0.18 |
-| TF-IDF + LogReg                 |             2.1  |
-| Full check_message() (deployed) |             1.86 |
+| Rules only                      |             0.17 |
+| TF-IDF + LogReg                 |             1.14 |
+| Full check_message() (deployed) |             1.43 |
 
 Model details:
 
@@ -153,3 +171,4 @@ Model details:
 - **TF-IDF + LogReg**: size_mb=1.0. word + character TF-IDF, logistic regression
 - **TF-IDF + LogReg + rules (deployed)**: size_mb=1.0. max(model probability, rule score)
 - **Multilingual MiniLM embeddings + LogReg**: size_mb=471, model=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (frozen) + LogisticRegression, C=30, val_average_precision=0.9727, ms_per_message_cpu=7.16, model_size_mb=471. sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (frozen) + LogisticRegression
+- **MuRIL fine-tuned**: size_mb=950, model=google/muril-base-cased fine-tuned, epochs=2, max_len=128, train_rows=5797, device=cpu, train_minutes=36.9, val_average_precision=0.9872, ms_per_message=30.49, model_size_mb=950. google/muril-base-cased fine-tuned

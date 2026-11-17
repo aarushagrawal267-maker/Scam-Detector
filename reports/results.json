@@ -189,6 +189,89 @@
         "what": "max(model probability, rule score)",
         "size_mb": 471
       }
+    },
+    "MuRIL fine-tuned": {
+      "threshold": 0.0298,
+      "test": {
+        "n": 1161,
+        "scams": 294,
+        "precision": 0.844,
+        "recall": 0.973,
+        "f1": 0.904,
+        "fpr": 0.061,
+        "fnr": 0.027,
+        "tp": 286,
+        "fp": 53,
+        "fn": 8,
+        "tn": 814,
+        "ap": 0.986,
+        "roc_auc": 0.993
+      },
+      "challenge": {
+        "n": 70,
+        "scams": 38,
+        "precision": 0.865,
+        "recall": 0.842,
+        "f1": 0.853,
+        "fpr": 0.156,
+        "fnr": 0.158,
+        "tp": 32,
+        "fp": 5,
+        "fn": 6,
+        "tn": 27,
+        "ap": 0.938,
+        "roc_auc": 0.912
+      },
+      "info": {
+        "what": "google/muril-base-cased fine-tuned",
+        "size_mb": 950,
+        "model": "google/muril-base-cased fine-tuned",
+        "epochs": 2,
+        "max_len": 128,
+        "train_rows": 5797,
+        "device": "cpu",
+        "train_minutes": 36.9,
+        "val_average_precision": 0.9872,
+        "ms_per_message": 30.49,
+        "model_size_mb": 950
+      }
+    },
+    "MuRIL fine-tuned + rules": {
+      "threshold": 0.0852,
+      "test": {
+        "n": 1161,
+        "scams": 294,
+        "precision": 0.835,
+        "recall": 0.963,
+        "f1": 0.894,
+        "fpr": 0.065,
+        "fnr": 0.037,
+        "tp": 283,
+        "fp": 56,
+        "fn": 11,
+        "tn": 811,
+        "ap": 0.984,
+        "roc_auc": 0.992
+      },
+      "challenge": {
+        "n": 70,
+        "scams": 38,
+        "precision": 0.892,
+        "recall": 0.868,
+        "f1": 0.88,
+        "fpr": 0.125,
+        "fnr": 0.132,
+        "tp": 33,
+        "fp": 4,
+        "fn": 5,
+        "tn": 28,
+        "ap": 0.949,
+        "roc_auc": 0.927
+      },
+      "info": {
+        "what": "max(model probability, rule score)",
+        "size_mb": 950
+      }
     }
   },
   "deployed_thresholds": {
@@ -224,9 +307,9 @@
     }
   },
   "speed_ms_per_message_cpu": {
-    "Rules only": 0.18,
-    "TF-IDF + LogReg": 2.1,
-    "Full check_message() (deployed)": 1.86
+    "Rules only": 0.17,
+    "TF-IDF + LogReg": 1.14,
+    "Full check_message() (deployed)": 1.43
   },
   "test_rows": 1161
 }

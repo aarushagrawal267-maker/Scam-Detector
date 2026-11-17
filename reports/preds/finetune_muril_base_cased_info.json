@@ -1,0 +1,11 @@
+{
+  "model": "google/muril-base-cased fine-tuned",
+  "epochs": 2,
+  "max_len": 128,
+  "train_rows": 5797,
+  "device": "cpu",
+  "train_minutes": 36.9,
+  "val_average_precision": 0.9872,
+  "ms_per_message": 30.49,
+  "model_size_mb": 950
+}

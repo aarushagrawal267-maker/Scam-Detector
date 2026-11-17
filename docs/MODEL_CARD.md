@@ -33,6 +33,9 @@ A **second opinion** for individuals, especially older adults in India, about a 
 ### By language (false-alarm rate on genuine messages, test)
 English 0.9% · Hinglish 20% · Hindi 25% (12 genuine Hindi messages only) · other code-mixed 8–50% (very small samples).
 
+## Alternatives compared (not deployed)
+Multilingual MiniLM embeddings + LogReg (FPR 6.9%, 471 MB) and fine-tuned MuRIL (recall 97.3%, FPR 6.1%, ~30 ms, 950 MB). Neither beat the deployed system on false alarms, challenge-set errors, speed or size. All models showed the same higher false-alarm rates on non-English messages.
+
 ## Known limitations and risks
 - **Unknown real-world accuracy**: no real Indian user data yet.
 - **Unequal false alarms**: Hindi/Hinglish users get many more false 🟡 warnings than English users.

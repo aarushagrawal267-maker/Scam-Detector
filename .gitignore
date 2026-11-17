@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Secrets: never commit tokens or API keys
+.env
+
+# Data: raw downloads and processed splits are re-created by training/prepare_data.py.
+# Real collected messages must NEVER go into this public repository.
+data/raw/
+data/processed/
+data/collected/
+data/stats.db
+
+# Big model files / per-row predictions (re-created by the training scripts)
+models/*.bin
+models/*.safetensors
+models/muril*/
+reports/preds/*.csv

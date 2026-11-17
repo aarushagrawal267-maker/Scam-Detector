@@ -1,0 +1,71 @@
+text,label,category,language,tests
+"Dear SBI user, your YONO account will be suspended today due to pending PAN update. Update now: sbi-yono-pan.top/upd",scam,fake_bank_kyc,en,lookalike link + threat
+"Sir main bank se bol raha hu, aapke card pe 9999 ka transaction hua hai, cancel karne ke liye jo OTP aaya hai woh bata dijiye",scam,otp_theft,hinglish,OTP request in Hinglish
+"आपके खाते से 25,000 रुपये कटने वाले हैं। रोकने के लिए अभी आया हुआ OTP इस नंबर पर भेजें।",scam,otp_theft,hi,OTP request in Hindi
+Congratulations! Your mobile number has won 25 lakh in the WhatsApp lucky draw. Contact our manager on WhatsApp to claim.,scam,lottery_prize,en,"prize, no link"
+Ghar baithe kamaye 3000-5000 roz. Sirf YouTube videos like karne hain. Join karne ke liye msg karein,scam,job_offer,hinglish,task job scam Hinglish
+"Hello, I am Priya from a recruitment agency. Part time job: rate hotels on Google Maps and earn Rs 150 per task. Interested?",scam,job_offer,en,task job scam
+"Hi Papa, this is my new number. Old phone fell in water. Can you send 12,000 to this UPI, very urgent, will explain later",scam,family_impersonation,en,new-number family scam
+"Mummy mera phone kharab ho gaya, ye mera naya number hai. Jaldi 5000 bhej do, fees bharni hai",scam,family_impersonation,hinglish,new-number family scam Hinglish
+India Post: Your package is on hold at our warehouse due to an incomplete address. Pay Rs 25 redelivery fee within 12 hours: indiapost-redeliver.in/pay,scam,delivery_fee,en,delivery fee + lookalike
+Join our VIP stock trading group. Guaranteed 30% returns monthly. Limited seats. Contact our mentor on WhatsApp.,scam,investment_crypto,en,investment group
+"सिर्फ 10,000 लगाएं और 1 महीने में पैसा डबल करें। गारंटीड रिटर्न, कोई जोखिम नहीं।",scam,investment_crypto,hi,investment Hindi
+"My love, I sent you a gift parcel with jewellery and dollars. The customs officer says you must pay a clearance fee of 35,000 to receive it.",scam,romance,en,romance + customs fee
+"This is Mumbai Cyber Crime. Your Aadhaar is linked to a money laundering case. Stay on video call, you are under digital arrest. Do not inform family.",scam,government_impersonation,en,digital arrest
+Dear consumer aapka pichle mahine ka bill update nahi hua hai. Aaj raat 9:30 baje bijli kaat di jayegi. Turant electricity officer ko call kare 9876501234,scam,electricity_bill,hinglish,electricity disconnection
+"Pre-approved instant loan of Rs 5,00,000 without CIBIL check. Pay Rs 1,999 processing fee to get money in 10 minutes.",scam,loan_offer,en,loan + fee
+Your bank account has a problem. Please download AnyDesk and share the 9 digit code with our support executive so we can fix it.,scam,remote_access,en,remote access app
+"You received a refund of Rs 4,999 from Flipkart. Scan this QR code and enter your UPI PIN to receive the money.",scam,otp_theft,en,PIN to receive money
+"Aapka Paytm KYC expire ho gaya hai, wallet aaj band ho jayega. Is link pe click kare: bit.ly/ptm-kyc",scam,fake_bank_kyc,hinglish,KYC + shortener
+"बधाई हो! आपने KBC में 25 लाख रुपये जीते हैं। इनाम पाने के लिए 12,500 रुपये प्रोसेसिंग फीस जमा करें।",scam,lottery_prize,hi,KBC lottery Hindi
+FedEx: A parcel in your name containing illegal passports and drugs has been seized. Press 1 to speak to the officer.,scam,government_impersonation,en,courier-drugs threat
+"Income Tax Department: You are eligible for a refund of Rs 15,490. Submit your bank details at incometax-refund-gov.co to receive it.",scam,fake_bank_kyc,en,tax refund phishing
+URGENT: Your power will be disconnected tonight because your bill was not updated. Reply YES to avoid disconnection.,scam,electricity_bill,en,"electricity, no number"
+Your SIM card will be deactivated in 2 hours as per TRAI rules. Press 9 to speak with customer care.,scam,government_impersonation,en,TRAI SIM threat
+Official crypto giveaway! Send 0.1 BTC and get 0.2 BTC back instantly.,scam,investment_crypto,en,crypto doubling
+Your electricity bill is pending. Download the official bill app from this link to pay: mseb-bill-update.apk,scam,remote_access,en,APK link
+"Aapke HDFC credit card ke 7,850 reward points aaj expire ho rahe hain. Redeem karne ke liye link kholiye: hdfc-rewardz.in",scam,fake_bank_kyc,hinglish,reward points lookalike
+"पापा मेरा फोन खो गया है, यह मेरा नया नंबर है। अभी 10,000 रुपये भेज दो, बहुत ज़रूरी है।",scam,family_impersonation,hi,family scam Hindi
+आपका बिजली कनेक्शन आज रात काट दिया जाएगा। तुरंत इस नंबर पर कॉल करें 9876512345,scam,electricity_bill,hi,electricity Hindi
+Ur acc0unt wi11 be b1ocked t0day. Upd@te K Y C n0w at sbi-kyc.co,scam,fake_bank_kyc,en,ADVERSARIAL: leetspeak + spaced letters
+Please share the O.T.P you just received so we can reverse the wrong transaction,scam,otp_theft,en,ADVERSARIAL: O.T.P with dots
+"Hello dear, kindly do the needful and send the code that came on your phone. It is for your parcel verification.",scam,otp_theft,en,ADVERSARIAL: 'code' instead of OTP
+Your gift is waiting 🎁🎁 Tap 👉 cutt.ly/giftz to collect before midnight ⏰,scam,lottery_prize,en,"ADVERSARIAL: emoji-heavy, short"
+Sir I am calling from your bank's head office. For security we need to verify your card. Just tell me the 3 digit number on the back.,scam,otp_theft,en,ADVERSARIAL: CVV without the word CVV
+"Hey, is this still your number? I found your profile on a job site, we have a remote role paying 8k a day. Reply to know more.",scam,job_offer,en,ADVERSARIAL: friendly opener job scam
+"Dear customer, this is a reminder that your parcel delivery failed. Confirm your details here to reschedule",scam,delivery_fee,en,"ADVERSARIAL: no link, no fee"
+Aapka khaata band hone wala hai. Turant apni jaankari update karein warna paise nikal nahi payenge,scam,fake_bank_kyc,hinglish,ADVERSARIAL: unusual Hinglish spelling
+"Dear valued customer, we noticed unusual activity. Kindly verify your identity within 24 hrs to avoid service interruption: secure-verify-login.online",scam,phishing_link,en,generic phishing
+"नमस्ते, मैं बैंक से बोल रहा हूँ। आपके कार्ड के पीछे लिखे 3 अंक बताइए, कार्ड चालू रखने के लिए ज़रूरी है।",scam,otp_theft,hi,ADVERSARIAL: CVV in Hindi without the word
+Your OTP for login to HDFC Bank NetBanking is 482913. Valid for 5 minutes. Do not share this OTP with anyone. HDFC Bank will never ask for your OTP.,safe,,en,HARD NEGATIVE: genuine OTP
+"Rs 2,500.00 debited from A/c XX4321 on 12-11-26 to UPI/zomato. If not done by you, call the number on the back of your card.",safe,,en,HARD NEGATIVE: genuine debit alert
+"Reminder: Your electricity bill of Rs 1,240 for October is due on 25 Nov. Pay via the official app or at the office. Ignore if already paid.",safe,,en,HARD NEGATIVE: genuine bill
+Your Amazon order #405-1234567-1234567 has been shipped and will arrive on Thursday.,safe,,en,genuine order
+"Dear customer, as per RBI guidelines, please complete your periodic KYC update by visiting your nearest branch with original documents. Ignore if already done.",safe,,en,HARD NEGATIVE: genuine KYC reminder (branch visit)
+"Beta kal shaam 6 baje mandir chalna hai, tayyar rehna",safe,,hinglish,family chat
+"माँ, मैं ट्रेन में बैठ गया हूँ, सुबह 7 बजे तक पहुँच जाऊँगा।",safe,,hi,family chat Hindi
+Jio: Your recharge of Rs 299 is successful. Validity 28 days. Data 1.5GB/day.,safe,,en,genuine recharge
+"Hi, this is Ravi from the society office. The water supply will be off tomorrow from 10am to 2pm for tank cleaning.",safe,,en,community notice
+Your appointment at Apollo Clinic is confirmed for 18 Nov at 11:30 AM. Please arrive 10 minutes early.,safe,,en,appointment
+"Congratulations on your retirement, Sharma ji! Wishing you good health and happiness.",safe,,en,HARD NEGATIVE: 'congratulations'
+Your parcel could not be delivered today as the house was locked. Our agent will try again tomorrow. No action needed.,safe,,en,HARD NEGATIVE: genuine failed delivery
+"Aapka LIC premium Rs 12,000 due hai 30 Nov tak. Payment branch ya LIC app se karein.",safe,,hinglish,genuine premium reminder
+"Dear parent, school will remain closed tomorrow due to heavy rain. - Principal",safe,,en,school notice
+"SBI: Your a/c XX7890 is credited with Rs 15,000 pension on 01-11-26. Avl bal Rs 48,210.",safe,,en,genuine credit alert
+आपका गैस सिलेंडर बुक हो गया है। बुकिंग नंबर 123456। डिलीवरी 2 दिन में होगी।,safe,,hi,gas booking Hindi
+"Uncle, I've sent the wedding card photo on WhatsApp. Please come with aunty on 5th Dec.",safe,,en,family invite
+Your Google verification code is 274910,safe,,en,HARD NEGATIVE: bare OTP
+Doctor's reminder: take your BP tablet after breakfast. Next check-up on Monday.,safe,,en,health reminder
+"Hey mom, reached office safely. Will call you at lunch.",safe,,en,HARD NEGATIVE: 'mom' without new number
+Flipkart: Your refund of Rs 499 for order OD12345 has been credited to your original payment method.,safe,,en,HARD NEGATIVE: genuine refund
+"Mummy main aaj late aaunga, khana mat banana mere liye",safe,,hinglish,family chat Hinglish
+"IRCTC: PNR 4512345678, Train 12951, Coach B2 Berth 34 confirmed. Happy journey.",safe,,en,train ticket
+Your power supply will be interrupted on 20 Nov from 10 AM to 1 PM for maintenance work. - Tata Power,safe,,en,HARD NEGATIVE: genuine power cut notice
+Meeting of the senior citizens' club this Sunday at 5 pm in the community hall. Tea will be served.,safe,,en,club notice
+Your Aadhaar has been successfully updated. You can download it from uidai.gov.in.,safe,,en,HARD NEGATIVE: Aadhaar + official link
+आज योग कक्षा सुबह 6 बजे पार्क में होगी।,safe,,hi,yoga class Hindi
+"Your loan EMI of Rs 8,200 has been auto-debited. Thank you for banking with us.",safe,,en,HARD NEGATIVE: genuine EMI
+"Hi Dad, can you send me 500 for the bus pass? I'll pay back on Sunday :)",safe,,en,HARD NEGATIVE: real family money request (text alone can't tell)
+"Big Diwali sale! Up to 50% off on all sarees at Lakshmi Silks, MG Road. Visit today.",safe,,en,"HARD NEGATIVE: legit promotion (spam, not scam)"
+"बेटा, दवाई की दुकान से मेरी शुगर की दवाई ले आना। पैसे मैं दे दूँगी।",safe,,hi,"family chat Hindi, mentions money"
+Aapka order deliver ho gaya hai. Khareedari ke liye dhanyavad!,safe,,hinglish,genuine delivery Hinglish

@@ -1,0 +1,232 @@
+{
+  "systems": {
+    "Rules only": {
+      "threshold": 0.19999999999999996,
+      "test": {
+        "n": 1161,
+        "scams": 294,
+        "precision": 0.841,
+        "recall": 0.721,
+        "f1": 0.777,
+        "fpr": 0.046,
+        "fnr": 0.279,
+        "tp": 212,
+        "fp": 40,
+        "fn": 82,
+        "tn": 827,
+        "ap": 0.746,
+        "roc_auc": 0.846
+      },
+      "challenge": {
+        "n": 70,
+        "scams": 38,
+        "precision": 0.971,
+        "recall": 0.868,
+        "f1": 0.917,
+        "fpr": 0.031,
+        "fnr": 0.132,
+        "tp": 33,
+        "fp": 1,
+        "fn": 5,
+        "tn": 31,
+        "ap": 0.94,
+        "roc_auc": 0.928
+      },
+      "info": {
+        "what": "hand-written red-flag rules + link checks",
+        "size_mb": 0.03
+      }
+    },
+    "TF-IDF + LogReg": {
+      "threshold": 0.3243,
+      "test": {
+        "n": 1161,
+        "scams": 294,
+        "precision": 0.916,
+        "recall": 0.969,
+        "f1": 0.942,
+        "fpr": 0.03,
+        "fnr": 0.031,
+        "tp": 285,
+        "fp": 26,
+        "fn": 9,
+        "tn": 841,
+        "ap": 0.989,
+        "roc_auc": 0.994
+      },
+      "challenge": {
+        "n": 70,
+        "scams": 38,
+        "precision": 1.0,
+        "recall": 0.763,
+        "f1": 0.866,
+        "fpr": 0.0,
+        "fnr": 0.237,
+        "tp": 29,
+        "fp": 0,
+        "fn": 9,
+        "tn": 32,
+        "ap": 0.983,
+        "roc_auc": 0.971
+      },
+      "info": {
+        "what": "word + character TF-IDF, logistic regression",
+        "size_mb": 1.0
+      }
+    },
+    "TF-IDF + LogReg + rules (deployed)": {
+      "threshold": 0.3373,
+      "test": {
+        "n": 1161,
+        "scams": 294,
+        "precision": 0.902,
+        "recall": 0.966,
+        "f1": 0.933,
+        "fpr": 0.036,
+        "fnr": 0.034,
+        "tp": 284,
+        "fp": 31,
+        "fn": 10,
+        "tn": 836,
+        "ap": 0.988,
+        "roc_auc": 0.993
+      },
+      "challenge": {
+        "n": 70,
+        "scams": 38,
+        "precision": 1.0,
+        "recall": 0.868,
+        "f1": 0.93,
+        "fpr": 0.0,
+        "fnr": 0.132,
+        "tp": 33,
+        "fp": 0,
+        "fn": 5,
+        "tn": 32,
+        "ap": 0.987,
+        "roc_auc": 0.975
+      },
+      "info": {
+        "what": "max(model probability, rule score)",
+        "size_mb": 1.0
+      }
+    },
+    "Multilingual MiniLM embeddings + LogReg": {
+      "threshold": 0.3283,
+      "test": {
+        "n": 1161,
+        "scams": 294,
+        "precision": 0.826,
+        "recall": 0.969,
+        "f1": 0.892,
+        "fpr": 0.069,
+        "fnr": 0.031,
+        "tp": 285,
+        "fp": 60,
+        "fn": 9,
+        "tn": 807,
+        "ap": 0.968,
+        "roc_auc": 0.986
+      },
+      "challenge": {
+        "n": 70,
+        "scams": 38,
+        "precision": 0.917,
+        "recall": 0.868,
+        "f1": 0.892,
+        "fpr": 0.094,
+        "fnr": 0.132,
+        "tp": 33,
+        "fp": 3,
+        "fn": 5,
+        "tn": 29,
+        "ap": 0.96,
+        "roc_auc": 0.947
+      },
+      "info": {
+        "what": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (frozen) + LogisticRegression",
+        "size_mb": 471,
+        "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (frozen) + LogisticRegression",
+        "C": 30,
+        "val_average_precision": 0.9727,
+        "ms_per_message_cpu": 7.16,
+        "model_size_mb": 471
+      }
+    },
+    "Multilingual MiniLM embeddings + LogReg + rules": {
+      "threshold": 0.4375,
+      "test": {
+        "n": 1161,
+        "scams": 294,
+        "precision": 0.832,
+        "recall": 0.963,
+        "f1": 0.893,
+        "fpr": 0.066,
+        "fnr": 0.037,
+        "tp": 283,
+        "fp": 57,
+        "fn": 11,
+        "tn": 810,
+        "ap": 0.968,
+        "roc_auc": 0.986
+      },
+      "challenge": {
+        "n": 70,
+        "scams": 38,
+        "precision": 0.921,
+        "recall": 0.921,
+        "f1": 0.921,
+        "fpr": 0.094,
+        "fnr": 0.079,
+        "tp": 35,
+        "fp": 3,
+        "fn": 3,
+        "tn": 29,
+        "ap": 0.974,
+        "roc_auc": 0.966
+      },
+      "info": {
+        "what": "max(model probability, rule score)",
+        "size_mb": 471
+      }
+    }
+  },
+  "deployed_thresholds": {
+    "suspicious": 0.3373,
+    "scam": 0.6512
+  },
+  "three_way_test": {
+    "scam": {
+      "really safe": 9,
+      "really scam": 273
+    },
+    "suspicious": {
+      "really safe": 22,
+      "really scam": 11
+    },
+    "likely_safe": {
+      "really safe": 836,
+      "really scam": 10
+    }
+  },
+  "challenge_adversarial_caught": "4/9",
+  "challenge_hard_negatives_correct": "14/14",
+  "category_accuracy": {
+    "synthetic_test": {
+      "n_caught": 112,
+      "correct": 56,
+      "accuracy": 0.5
+    },
+    "challenge": {
+      "n_caught": 33,
+      "correct": 26,
+      "accuracy": 0.788
+    }
+  },
+  "speed_ms_per_message_cpu": {
+    "Rules only": 0.18,
+    "TF-IDF + LogReg": 2.1,
+    "Full check_message() (deployed)": 1.86
+  },
+  "test_rows": 1161
+}

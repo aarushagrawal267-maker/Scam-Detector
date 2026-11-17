@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" data-ui-lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impact so far – Scam Checker</title>
+  <meta name="description" content="Live anonymous statistics: how many messages were checked, how many looked like scams, and which scam types are most common.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/lang-init.js"></script>
+  <script src="/common.js" defer></script>
+  <script src="/stats.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main"><span class="l-en">Skip to main content</span><span class="l-hi" lang="hi">मुख्य सामग्री पर जाएं</span></a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="/"><span aria-hidden="true">🛡️&nbsp;</span><span class="l-en">Scam Checker</span><span class="l-hi" lang="hi">धोखा जांच</span></a>
+      <button type="button" class="lang-toggle" id="lang-toggle">
+        <span class="l-en"><span class="visually-hidden">Switch language to </span><span lang="hi">हिंदी</span></span>
+        <span class="l-hi" lang="hi"><span class="visually-hidden">भाषा बदलें: </span><span lang="en">English</span></span>
+      </button>
+    </div>
+    <nav class="site-nav" aria-label="Main menu">
+      <ul class="wrap nav-list">
+        <li><a href="/"><span class="l-en">Check</span><span class="l-hi" lang="hi">जांचें</span></a></li>
+        <li><a href="/common-scams.html"><span class="l-en">Common scams</span><span class="l-hi" lang="hi">आम धोखे</span></a></li>
+        <li><a href="/guide.html"><span class="l-en">How to use</span><span class="l-hi" lang="hi">कैसे इस्तेमाल करें</span></a></li>
+        <li><a href="/stats.html" aria-current="page"><span class="l-en">Stats</span><span class="l-hi" lang="hi">आंकड़े</span></a></li>
+        <li><a href="/privacy.html"><span class="l-en">Privacy</span><span class="l-hi" lang="hi">गोपनीयता</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="wrap" tabindex="-1">
+    <h1><span class="l-en">Impact so far</span><span class="l-hi" lang="hi">अब तक का असर</span></h1>
+    <p class="lead">
+      <span class="l-en">Live numbers from this checker. We store <strong>counts only</strong>: no message text, pictures, names, phone numbers or IP addresses. Groups with fewer than 5 checks are hidden.</span>
+      <span class="l-hi" lang="hi">इस टूल के लाइव आंकड़े। हम <strong>सिर्फ़ गिनती</strong> रखते हैं: कोई मैसेज टेक्स्ट, तस्वीर, नाम, फ़ोन नंबर या IP पता नहीं। 5 से कम जांचों वाले समूह छुपा दिए जाते हैं।</span>
+    </p>
+
+    <div id="stats-status" class="status" role="status" aria-live="polite"></div>
+
+    <div id="stats-body" hidden>
+      <div class="stat-tiles">
+        <div class="tile"><span class="tile-number" id="t-total">0</span><span class="tile-label"><span class="l-en">messages checked</span><span class="l-hi" lang="hi">मैसेज जांचे गए</span></span></div>
+        <div class="tile"><span class="tile-number" id="t-scam">0</span><span class="tile-label"><span class="l-en">🔴 looked like scams</span><span class="l-hi" lang="hi">🔴 धोखा लगे</span></span></div>
+        <div class="tile"><span class="tile-number" id="t-sus">0</span><span class="tile-label"><span class="l-en">🟡 suspicious</span><span class="l-hi" lang="hi">🟡 संदिग्ध</span></span></div>
+        <div class="tile"><span class="tile-number" id="t-workshops">0</span><span class="tile-label"><span class="l-en">workshops held</span><span class="l-hi" lang="hi">वर्कशॉप हुईं</span></span></div>
+        <div class="tile"><span class="tile-number" id="t-people">0</span><span class="tile-label"><span class="l-en">people trained</span><span class="l-hi" lang="hi">लोगों को सिखाया</span></span></div>
+      </div>
+
+      <section aria-labelledby="h-verdict">
+        <h2 id="h-verdict"><span class="l-en">Results</span><span class="l-hi" lang="hi">नतीजे</span></h2>
+        <ul class="bars" id="bars-verdict"></ul>
+      </section>
+
+      <section aria-labelledby="h-category">
+        <h2 id="h-category"><span class="l-en">Scam types</span><span class="l-hi" lang="hi">धोखे के प्रकार</span></h2>
+        <ul class="bars" id="bars-category"></ul>
+      </section>
+
+      <section aria-labelledby="h-language">
+        <h2 id="h-language"><span class="l-en">Language of the messages</span><span class="l-hi" lang="hi">मैसेज की भाषा</span></h2>
+        <ul class="bars" id="bars-language"></ul>
+      </section>
+
+      <section aria-labelledby="h-channel">
+        <h2 id="h-channel"><span class="l-en">How people checked</span><span class="l-hi" lang="hi">लोगों ने कैसे जांचा</span></h2>
+        <ul class="bars" id="bars-channel"></ul>
+      </section>
+
+      <section aria-labelledby="h-day">
+        <h2 id="h-day"><span class="l-en">Checks per day (last 14 days)</span><span class="l-hi" lang="hi">हर दिन की जांचें (पिछले 14 दिन)</span></h2>
+        <ul class="bars" id="bars-day"></ul>
+      </section>
+
+      <section aria-labelledby="h-weekly" id="weekly-section" hidden>
+        <h2 id="h-weekly"><span class="l-en">Chat bot users per week</span><span class="l-hi" lang="hi">हर हफ्ते चैट बॉट इस्तेमाल करने वाले</span></h2>
+        <ul class="bars" id="bars-weekly"></ul>
+      </section>
+
+      <section aria-labelledby="h-feedback">
+        <h2 id="h-feedback"><span class="l-en">Was the checker right? (user feedback)</span><span class="l-hi" lang="hi">क्या नतीजा सही था? (लोगों के जवाब)</span></h2>
+        <p id="feedback-text"></p>
+        <p class="hint">
+          <span class="l-en">This only counts people who chose to press "Yes" or "No", so it is not a scientific accuracy measurement.</span>
+          <span class="l-hi" lang="hi">इसमें सिर्फ़ उन लोगों की गिनती है जिन्होंने "हां" या "नहीं" दबाया, इसलिए यह सटीकता का वैज्ञानिक माप नहीं है।</span>
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="l-en"><strong>Not a guarantee.</strong> Lost money? Call <a href="tel:1930">1930</a> / <a href="https://cybercrime.gov.in/" rel="noopener noreferrer">cybercrime.gov.in</a></p>
+      <p class="l-hi" lang="hi"><strong>यह गारंटी नहीं है।</strong> पैसे चले गए? <a href="tel:1930">1930</a> पर कॉल करें / <a href="https://cybercrime.gov.in/" rel="noopener noreferrer">cybercrime.gov.in</a></p>
+      <p class="l-en">A student project. It does not replace your bank, the police or official reporting.</p>
+      <p class="l-hi" lang="hi">यह एक छात्र प्रोजेक्ट है। यह आपके बैंक, पुलिस या सरकारी शिकायत की जगह नहीं लेता।</p>
+    </div>
+  </footer>
+</body>
+</html>

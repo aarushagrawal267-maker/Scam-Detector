@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" data-ui-lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scam Checker – is this message a scam?</title>
+  <meta name="description" content="Paste a suspicious SMS or WhatsApp message to see if it looks like a scam, why, and what to do. English and Hindi.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/lang-init.js"></script>
+  <script src="/common.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main"><span class="l-en">Skip to main content</span><span class="l-hi" lang="hi">मुख्य सामग्री पर जाएं</span></a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="/"><span aria-hidden="true">🛡️&nbsp;</span><span class="l-en">Scam Checker</span><span class="l-hi" lang="hi">धोखा जांच</span></a>
+      <button type="button" class="lang-toggle" id="lang-toggle">
+        <span class="l-en"><span class="visually-hidden">Switch language to </span><span lang="hi">हिंदी</span></span>
+        <span class="l-hi" lang="hi"><span class="visually-hidden">भाषा बदलें: </span><span lang="en">English</span></span>
+      </button>
+    </div>
+    <nav class="site-nav" aria-label="Main menu">
+      <ul class="wrap nav-list">
+        <li><a href="/" aria-current="page"><span class="l-en">Check</span><span class="l-hi" lang="hi">जांचें</span></a></li>
+        <li><a href="/common-scams.html"><span class="l-en">Common scams</span><span class="l-hi" lang="hi">आम धोखे</span></a></li>
+        <li><a href="/guide.html"><span class="l-en">How to use</span><span class="l-hi" lang="hi">कैसे इस्तेमाल करें</span></a></li>
+        <li><a href="/stats.html"><span class="l-en">Stats</span><span class="l-hi" lang="hi">आंकड़े</span></a></li>
+        <li><a href="/privacy.html"><span class="l-en">Privacy</span><span class="l-hi" lang="hi">गोपनीयता</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="wrap" tabindex="-1">
+    <h1><span class="l-en">Is this message a scam?</span><span class="l-hi" lang="hi">क्या यह मैसेज धोखा है?</span></h1>
+    <p class="lead">
+      <span class="l-en">Paste the message below and press <strong>Check</strong>. We will tell you if it looks like a scam, why, and what to do.</span>
+      <span class="l-hi" lang="hi">नीचे मैसेज पेस्ट करें और <strong>जांचें</strong> दबाएं। हम बताएंगे कि यह धोखा लगता है या नहीं, क्यों, और आपको क्या करना चाहिए।</span>
+    </p>
+
+    <form id="check-form" class="check-card" novalidate>
+      <label for="message" class="field-label">
+        <span class="l-en">Paste the message here</span><span class="l-hi" lang="hi">मैसेज यहां पेस्ट करें</span>
+      </label>
+      <p class="hint" id="message-hint">
+        <span class="l-en">Tip: remove any OTP, password or bank number before pasting.</span>
+        <span class="l-hi" lang="hi">सलाह: पेस्ट करने से पहले कोई भी OTP, पासवर्ड या बैंक नंबर हटा दें।</span>
+      </p>
+      <textarea id="message" name="message" aria-describedby="message-hint" autocomplete="off" spellcheck="false"></textarea>
+
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary" id="check-btn">
+          <span aria-hidden="true">🔍</span><span class="l-en">Check</span><span class="l-hi" lang="hi">जांचें</span>
+        </button>
+        <button type="button" class="btn btn-secondary" id="clear-btn">
+          <span class="l-en">Clear</span><span class="l-hi" lang="hi">साफ़ करें</span>
+        </button>
+      </div>
+
+      <p class="or-divider"><span class="l-en">— or —</span><span class="l-hi" lang="hi">— या —</span></p>
+
+      <!-- The real file picker is hidden; the label below looks like a big button. -->
+      <input type="file" id="screenshot" class="file-input" accept="image/png,image/jpeg,image/webp" aria-describedby="screenshot-hint">
+      <label for="screenshot" class="btn btn-secondary btn-block">
+        <span aria-hidden="true">📷</span><span class="l-en">Upload a screenshot</span><span class="l-hi" lang="hi">स्क्रीनशॉट अपलोड करें</span>
+      </label>
+      <p class="hint" id="screenshot-hint">
+        <span class="l-en">PNG or JPG, up to 6 MB. The picture is read and then deleted. It is never saved.</span>
+        <span class="l-hi" lang="hi">PNG या JPG, 6 MB तक। तस्वीर पढ़कर तुरंत हटा दी जाती है। इसे सेव नहीं किया जाता।</span>
+      </p>
+    </form>
+
+    <!-- Shown only when a bot link is set in app.js (CONFIG.TELEGRAM_BOT_URL). -->
+    <div class="bot-box" id="bot-box" hidden>
+      <a class="btn btn-primary btn-block" id="bot-link" href="/" rel="noopener noreferrer">
+        <span aria-hidden="true">💬</span><span class="l-en">Open the chat bot</span><span class="l-hi" lang="hi">चैट बॉट खोलें</span>
+      </a>
+    </div>
+
+    <!-- Screen readers announce changes in this area (aria-live). -->
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <div id="error" class="error-box" role="alert" hidden></div>
+
+    <section id="result" class="result" aria-labelledby="result-title" tabindex="-1" hidden>
+      <h2 id="result-title" class="visually-hidden"><span class="l-en">Result</span><span class="l-hi" lang="hi">नतीजा</span></h2>
+
+      <div id="verdict" class="verdict">
+        <span id="verdict-emoji" class="verdict-emoji" aria-hidden="true"></span>
+        <p id="verdict-label" class="verdict-label"></p>
+        <p id="verdict-headline" class="verdict-headline"></p>
+        <p id="verdict-category" class="verdict-category" hidden></p>
+      </div>
+
+      <div id="extracted-box" class="result-section" hidden>
+        <h2><span class="l-en">Text we read from your screenshot</span><span class="l-hi" lang="hi">आपके स्क्रीनशॉट से पढ़ा गया टेक्स्ट</span></h2>
+        <p id="extracted-text" class="extracted"></p>
+      </div>
+
+      <div class="result-section">
+        <h2><span class="l-en">Why?</span><span class="l-hi" lang="hi">क्यों?</span></h2>
+        <ul id="flags"></ul>
+      </div>
+
+      <div class="result-section" id="links-box" hidden>
+        <h2><span class="l-en">Links in the message</span><span class="l-hi" lang="hi">मैसेज में दिए लिंक</span></h2>
+        <p class="hint">
+          <span class="l-en">We did not open these links. Please do not open them either.</span>
+          <span class="l-hi" lang="hi">हमने ये लिंक नहीं खोले। आप भी इन्हें न खोलें।</span>
+        </p>
+        <ul id="links" class="link-list"></ul>
+      </div>
+
+      <div class="result-section">
+        <h2><span class="l-en">What should I do?</span><span class="l-hi" lang="hi">मुझे क्या करना चाहिए?</span></h2>
+        <ol id="advice"></ol>
+      </div>
+
+      <p id="disclaimer" class="disclaimer"></p>
+      <p id="lang-note" class="lang-note" hidden></p>
+
+      <div class="feedback">
+        <p class="field-label" id="fb-question">
+          <span class="l-en">Was this result right?</span><span class="l-hi" lang="hi">क्या यह नतीजा सही था?</span>
+        </p>
+        <div class="btn-row" role="group" aria-labelledby="fb-question">
+          <button type="button" class="btn btn-secondary" id="fb-yes">
+            <span aria-hidden="true">👍</span><span class="l-en">Yes</span><span class="l-hi" lang="hi">हां</span>
+          </button>
+          <button type="button" class="btn btn-secondary" id="fb-no">
+            <span aria-hidden="true">👎</span><span class="l-en">No</span><span class="l-hi" lang="hi">नहीं</span>
+          </button>
+        </div>
+        <p id="fb-thanks" class="thanks" role="status" hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="l-en"><strong>Not a guarantee.</strong> Lost money? Call <a href="tel:1930">1930</a> / <a href="https://cybercrime.gov.in/" rel="noopener noreferrer">cybercrime.gov.in</a></p>
+      <p class="l-hi" lang="hi"><strong>यह गारंटी नहीं है।</strong> पैसे चले गए? <a href="tel:1930">1930</a> पर कॉल करें / <a href="https://cybercrime.gov.in/" rel="noopener noreferrer">cybercrime.gov.in</a></p>
+      <p class="l-en">A student project. It does not replace your bank, the police or official reporting.</p>
+      <p class="l-hi" lang="hi">यह एक छात्र प्रोजेक्ट है। यह आपके बैंक, पुलिस या सरकारी शिकायत की जगह नहीं लेता।</p>
+    </div>
+  </footer>
+</body>
+</html>

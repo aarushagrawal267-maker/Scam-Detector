@@ -1,0 +1,17 @@
+{
+  "model_version": "tfidf-logreg-2026-11-17",
+  "trained_on": "2026-11-17",
+  "C": 10.0,
+  "val_average_precision": 0.9905,
+  "thresholds": {
+    "suspicious": 0.3373,
+    "scam": 0.6512
+  },
+  "threshold_rule": "suspicious: recall>=0.97 on val; scam: precision>=0.97 on val",
+  "train_rows": 5797,
+  "train_sources": {
+    "uci": 3685,
+    "synthetic": 1128,
+    "clove": 984
+  }
+}

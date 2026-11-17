@@ -1,0 +1,4 @@
+date,activity,type,hours,people_reached,evidence_link,notes
+2000-01-01,EXAMPLE - Trained first TF-IDF baseline model and wrote error analysis,build,3,0,EXAMPLE - link to commit or results file,EXAMPLE ROW - delete before use
+2000-01-02,EXAMPLE - Usability session round 1 at partner senior centre (after IRB approval),user-test,4,5,EXAMPLE - link to anonymised observation summary,EXAMPLE ROW - delete before use; people_reached = participants who signed consent
+2000-01-03,EXAMPLE - Emailed one professor asking for feedback on model evaluation,outreach,1,1,EXAMPLE - link to sent-mail screenshot (private),EXAMPLE ROW - delete before use; record replies in a new row when they arrive

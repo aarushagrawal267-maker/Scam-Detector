@@ -1,0 +1,13 @@
+# Extra packages to RE-TRAIN and EVALUATE the models (not needed to run the app).
+# Install:  pip install -r requirements.txt -r requirements-ml.txt
+pandas==3.1.1
+pyarrow==26.0.1
+huggingface_hub==2.4.0
+matplotlib==3.11.2
+tabulate==0.10.0
+# Transformer models (large download). On a CPU-only laptop use:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch==2.15.0
+transformers==5.23.0
+sentence-transformers==6.3.0
+accelerate==1.16.0

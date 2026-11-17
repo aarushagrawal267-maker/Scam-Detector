@@ -28,7 +28,7 @@ A free program called Tesseract reads the text from the picture on our server, i
 
 - Telegram delivers your messages to our bot, so Telegram sees them, as with any Telegram chat. Telegram's own privacy policy applies to that.
 - Our bot does **not** save the text of your messages.
-- It keeps only two things, in memory: your language choice, and your last result (colour, scam type and reasons) so the "Why?" and "What should I do?" buttons work. This is wiped whenever the bot restarts.
+- It keeps only two things, in memory: your language choice, and your last result (colour, scam type and reasons) so the "Why?" and "What should I do?" buttons work. The last result is deleted after 30 minutes, and both are wiped whenever the bot restarts.
 - To count how many people used the bot each week, it stores a scrambled code (a "keyed hash") made from your chat ID. The secret key changes every week and old keys are deleted, so nobody can turn the code back into your chat ID or follow you from one week to the next.
 
 ## 5. What we store: counts only
@@ -110,7 +110,7 @@ AI स्कैम मैसेज डिटेक्टर एक छात्�
 
 - Telegram आपके मैसेज हमारे बॉट तक पहुंचाता है, इसलिए किसी भी Telegram चैट की तरह Telegram उन्हें देखता है। उस पर Telegram की अपनी गोपनीयता नीति लागू होती है।
 - हमारा बॉट आपके मैसेज का टेक्स्ट **सेव नहीं** करता।
-- वह मेमोरी में सिर्फ़ दो चीज़ें रखता है: आपकी चुनी भाषा, और आपका आखिरी नतीजा (रंग, धोखे का प्रकार और कारण), ताकि "क्यों?" और "मुझे क्या करना चाहिए?" बटन काम करें। बॉट रीस्टार्ट होते ही यह मिट जाता है।
+- वह मेमोरी में सिर्फ़ दो चीज़ें रखता है: आपकी चुनी भाषा, और आपका आखिरी नतीजा (रंग, धोखे का प्रकार और कारण), ताकि "क्यों?" और "मुझे क्या करना चाहिए?" बटन काम करें। आखिरी नतीजा 30 मिनट बाद मिटा दिया जाता है, और बॉट रीस्टार्ट होते ही दोनों मिट जाते हैं।
 - हर हफ्ते कितने लोगों ने बॉट इस्तेमाल किया, यह गिनने के लिए बॉट आपकी चैट आईडी से बना एक उलझा हुआ कोड ("keyed hash") रखता है। इसकी गुप्त चाबी हर हफ्ते बदलती है और पुरानी चाबियां मिटा दी जाती हैं, इसलिए इस कोड से न आपकी चैट आईडी पता चल सकती है, न हफ्ते-दर-हफ्ते आपको पहचाना जा सकता है।
 
 ## 5. हम क्या सेव करते हैं: सिर्फ़ गिनती

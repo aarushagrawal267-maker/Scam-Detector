@@ -28,10 +28,12 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
+from starlette.formparsers import MultiPartParser
 
 from scam_detector import __version__, stats
 from scam_detector.detector import MAX_CHARS, check_message
 from scam_detector.model import load_meta, load_model
+from scam_detector.ocr import MAX_BYTES as MAX_IMAGE_BYTES
 from scam_detector.ocr import OcrUnavailable, extract_text, ocr_available
 
 STATIC = Path(__file__).parent / "static"
@@ -42,6 +44,15 @@ app = FastAPI(title="AI Scam Message Detector", version=__version__, docs_url="/
 # ---------------------------------------------------------------- safety ----
 RATE_LIMIT = 30  # requests per minute per IP, for the /api/check* endpoints
 _hits: dict[str, deque] = defaultdict(deque)
+_MAX_TRACKED_IPS = 10_000  # forget old entries so memory can't grow forever
+
+# A screenshot upload may be at most the OCR limit plus a little room for the
+# form fields. Bigger requests are refused before they are read.
+MAX_UPLOAD_REQUEST = MAX_IMAGE_BYTES + 64 * 1024
+# Keep uploaded screenshots in memory: by default Starlette writes uploads
+# bigger than 1 MB to a temporary file on disk, which would break the
+# "images are never written to disk" privacy promise.
+MultiPartParser.spool_max_size = MAX_UPLOAD_REQUEST
 
 
 def _rate_limited(request: Request) -> bool:
@@ -51,6 +62,9 @@ def _rate_limited(request: Request) -> bool:
     """
     ip = request.client.host if request.client else "unknown"
     now = time.monotonic()
+    if len(_hits) > _MAX_TRACKED_IPS:
+        for key in [k for k, v in _hits.items() if not v or now - v[-1] > 60]:
+            del _hits[key]
     q = _hits[ip]
     while q and now - q[0] > 60:
         q.popleft()
@@ -64,6 +78,12 @@ def _rate_limited(request: Request) -> bool:
 async def security_headers(request: Request, call_next):
     if request.url.path.startswith("/api/check") and _rate_limited(request):
         return JSONResponse({"error": "Too many checks. Please wait a minute."}, status_code=429)
+    if request.url.path == "/api/check-image" and request.method == "POST":
+        length = request.headers.get("content-length")
+        if length is None or not length.isdigit():
+            return JSONResponse({"detail": "Upload size missing."}, status_code=411)
+        if int(length) > MAX_UPLOAD_REQUEST:
+            return JSONResponse({"detail": "Image is too large (max 6 MB)."}, status_code=413)
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"

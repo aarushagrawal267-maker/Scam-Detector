@@ -134,3 +134,34 @@ def test_bot_voice_note_gets_helpful_reply():
     api = FakeApi()
     BotLogic(api).handle({"update_id": 1, "message": {"chat": {"id": 9}, "voice": {"file_id": "v"}}})
     assert "🎤" in api.sent[-1][1]
+
+
+def test_oversized_upload_is_refused_before_reading(client):
+    big = b"\0" * (server.MAX_UPLOAD_REQUEST + 1)
+    r = client.post("/api/check-image", files={"file": ("big.png", big, "image/png")})
+    assert r.status_code == 413
+
+
+def test_screenshots_stay_in_memory():
+    # Uploads up to the size limit must not be spooled to a temporary file on disk.
+    from starlette.formparsers import MultiPartParser
+
+    assert MultiPartParser.spool_max_size >= server.MAX_UPLOAD_REQUEST
+
+
+@pytest.mark.skipif(not ocr_available(), reason="Tesseract not installed")
+def test_too_many_pixels_is_refused(client):
+    from PIL import Image
+
+    buf = io.BytesIO()
+    Image.new("1", (5000, 5000), 1).save(buf, format="PNG")  # small file, huge image
+    r = client.post("/api/check-image", files={"file": ("big.png", buf.getvalue(), "image/png")})
+    assert r.status_code == 413
+
+
+def test_rate_limiter_forgets_old_ips(client, monkeypatch):
+    monkeypatch.setattr(server, "_MAX_TRACKED_IPS", 5)
+    for i in range(20):
+        server._hits[f"10.0.0.{i}"]  # empty entries, as left behind after 60 s
+    client.post("/api/check", json={"text": "hello there"})
+    assert len(server._hits) <= 6

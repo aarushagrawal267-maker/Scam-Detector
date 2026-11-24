@@ -41,6 +41,10 @@ def extract_text(image_bytes: bytes, langs: str = "eng+hin") -> str:
 
     Image.MAX_IMAGE_PIXELS = MAX_PIXELS  # protects against "decompression bomb" images
     img = Image.open(io.BytesIO(image_bytes))
+    # Pillow only warns (does not refuse) between 1x and 2x MAX_IMAGE_PIXELS,
+    # so check the size ourselves before decoding the pixels.
+    if img.width * img.height > MAX_PIXELS:
+        raise ValueError("Image is too large (max 4000 x 4000 pixels).")
     img = ImageOps.exif_transpose(img)  # fix photos taken sideways
     img = img.convert("L")  # greyscale helps OCR
     # Small screenshots: enlarge so letters are big enough for Tesseract.

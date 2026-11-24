@@ -35,8 +35,8 @@
 ## 3. Run it locally (step by step)
 
 ```bash
-git clone https://github.com/aarushagrawal267-maker/Scam-Detector.git
-cd Scam-Detector
+git clone https://github.com/aarushagrawal267-maker/scam-detector.git
+cd scam-detector
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -85,21 +85,16 @@ Open http://127.0.0.1:8000. Check http://127.0.0.1:8000/api/health: it reports w
 - *"The Safe Browsing API is for non-commercial use only"*. A free student or non-profit tool fits. If the project ever becomes commercial, Google points to its **Web Risk** API instead.
 - Each developer gets a default quota, visible in the Google Cloud console ([Safe Browsing usage limits](https://developers.google.com/safe-browsing/v4/usage-limits)).
 
-## 5. Optional: Dockerfile for any Docker host
+## 5. Docker (any Docker host, e.g. a Render "Docker" web service)
 
-```dockerfile
-FROM python:3.12-slim
-RUN apt-get update && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-hin \
-    && rm -rf /var/lib/apt/lists/*
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-ENV PORT=8000
-CMD uvicorn app.server:app --host 0.0.0.0 --port ${PORT} --no-access-log --proxy-headers --forwarded-allow-ips="*"
+The repository now contains a ready [`Dockerfile`](../Dockerfile). It installs only the runtime packages from `requirements.txt` (not the large training libraries), adds Tesseract with English + Hindi, runs as a non-root user, disables access logs (so IP addresses are not logged) and listens on `$PORT`.
+
+```bash
+docker build -t scam-checker .
+docker run -p 8000:8000 -e ADMIN_TOKEN=change-me scam-checker
 ```
 
-*(The `requirements.txt` in this repo may include the training libraries, which are large. A smaller runtime-only requirements file makes the image much faster to build.)*
+To keep the anonymous stats across restarts, mount a volume on `/app/data`, e.g. `-v scam-data:/app/data`.
 
 ## 6. Keeping it running: monitoring
 

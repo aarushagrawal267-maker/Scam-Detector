@@ -41,7 +41,7 @@ Home page: [`docs/screenshots/home.png`](docs/screenshots/home.png)
 | OCR | Tesseract (`pytesseract`, Pillow) |
 | Bot | Telegram Bot API over `httpx` (long polling) |
 | Research | pandas, huggingface_hub (dataset download), sentence-transformers (MiniLM), transformers (MuRIL), PyTorch, matplotlib |
-| Tests | pytest (32 tests) |
+| Tests | pytest (36 tests) |
 | Deployment | Dockerfile (includes Tesseract English + Hindi) |
 
 ## How it works
@@ -67,7 +67,7 @@ On a held-out test set of 1,161 public/synthetic messages (294 scams):
 
 The most important weaknesses:
 
-- **False alarms on Hindi and Hinglish messages are much higher**: 20–25%, against 0.9% for English.
+- **False alarms on Hindi and Hinglish messages are much higher**: 20–25%, against 0.9% for English. These Hindi/Hinglish test sets are small (26 and 94 messages), so the uncertainty is large: 95% confidence intervals are in [`reports/BOOTSTRAP_CI.md`](reports/BOOTSTRAP_CI.md).
 - **Only 4 of 9 disguised scams were caught** in the hand-written challenge set.
 - **Accuracy on real messages is unknown.** That is the next step.
 
@@ -125,6 +125,7 @@ To re-train and re-evaluate (needs `requirements-ml.txt`):
 
 ```bash
 python -m training.prepare_data && python -m training.train_baseline && python -m training.evaluate
+python -m training.bootstrap_ci   # 95% confidence intervals per language
 ```
 
 ## Repository map
@@ -132,13 +133,13 @@ python -m training.prepare_data && python -m training.train_baseline && python -
 | Folder | Contents |
 |---|---|
 | `scam_detector/` | The detection engine: rules, link checks, model loading, verdict, messages (EN/HI), anonymous stats, OCR |
-| `training/` | Data preparation, baseline training, transformer comparison, evaluation |
+| `training/` | Data preparation, baseline training, transformer comparison, evaluation, bootstrap confidence intervals |
 | `app/` | FastAPI web server and the accessible website (`app/static/`) |
 | `bot/` | Telegram bot |
 | `data/challenge/` | 70 hand-written tricky test cases (never used for training) |
 | `models/` | Trained baseline model + thresholds |
 | `reports/` | Auto-generated results and figures |
-| `tests/` | 32 automated tests, including a privacy test |
+| `tests/` | 36 automated tests, including privacy and upload-limit tests |
 | `Dockerfile` | Container with the app + Tesseract OCR |
 | `docs/` | **Start with [`LEARNING_GUIDE.md`](docs/LEARNING_GUIDE.md)**, then the [timeline](docs/TIMELINE.md), [data card](docs/DATA_CARD.md), [model card](docs/MODEL_CARD.md), [research paper draft](docs/RESEARCH_PAPER.md), [labelling guide](docs/LABELING_GUIDE.md), [pilot protocol + consent forms](docs/PILOT_PROTOCOL.md), [privacy policy](docs/PRIVACY_POLICY.md), [accessibility checklist](docs/ACCESSIBILITY_CHECKLIST.md), [deployment](docs/DEPLOYMENT.md), [outreach plan](docs/OUTREACH_PLAN.md), [competitions](docs/COMPETITIONS.md), [impact tracking](docs/IMPACT_TRACKING.md), [printable guide (PDF)](docs/printable-guide.pdf) |
 
@@ -150,6 +151,7 @@ python -m training.prepare_data && python -m training.train_baseline && python -
 - Screenshot OCR is experimental and depends on image quality; voice notes are not supported.
 - The Telegram bot has been tested with a simulated Telegram only; Google Safe Browsing has not been tested with a real key.
 - The anonymous stats use a local SQLite file, which needs a persistent disk when deployed.
+- Rate limiting is per IP address and kept in memory on one server. Behind a hosting proxy it trusts the `X-Forwarded-For` header, which a determined user can fake; it slows down casual flooding, not a real attack.
 
 ## Privacy
 

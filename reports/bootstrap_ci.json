@@ -1,0 +1,82 @@
+{
+  "resamples": 2000,
+  "seed": 42,
+  "groups": {
+    "all": {
+      "n": 1161,
+      "scams": 294,
+      "recall": {
+        "value": 0.966,
+        "ci_low": 0.943,
+        "ci_high": 0.985
+      },
+      "fpr": {
+        "value": 0.036,
+        "ci_low": 0.024,
+        "ci_high": 0.048
+      },
+      "precision": {
+        "value": 0.902,
+        "ci_low": 0.867,
+        "ci_high": 0.932
+      }
+    },
+    "en": {
+      "n": 970,
+      "scams": 201,
+      "recall": {
+        "value": 0.96,
+        "ci_low": 0.931,
+        "ci_high": 0.984
+      },
+      "fpr": {
+        "value": 0.009,
+        "ci_low": 0.003,
+        "ci_high": 0.016
+      },
+      "precision": {
+        "value": 0.965,
+        "ci_low": 0.938,
+        "ci_high": 0.989
+      }
+    },
+    "hinglish": {
+      "n": 94,
+      "scams": 44,
+      "recall": {
+        "value": 1.0,
+        "ci_low": 1.0,
+        "ci_high": 1.0
+      },
+      "fpr": {
+        "value": 0.2,
+        "ci_low": 0.091,
+        "ci_high": 0.32
+      },
+      "precision": {
+        "value": 0.815,
+        "ci_low": 0.7,
+        "ci_high": 0.917
+      }
+    },
+    "hi": {
+      "n": 26,
+      "scams": 14,
+      "recall": {
+        "value": 0.929,
+        "ci_low": 0.769,
+        "ci_high": 1.0
+      },
+      "fpr": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 0.53
+      },
+      "precision": {
+        "value": 0.812,
+        "ci_low": 0.6,
+        "ci_high": 1.0
+      }
+    }
+  }
+}

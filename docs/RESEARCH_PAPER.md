@@ -75,7 +75,7 @@ Training with CloveAI gives AP = 1.000 on CloveAI's own test split, but challeng
 - Rules contributed recall on unseen phrasing and supplied the plain-language explanations users see.
 
 ## 7. Limitations
-No real Indian user messages; small Hindi/Hinglish test sets (wide confidence intervals; **[TODO]** add bootstrap 95% CIs); synthetic data written by LLMs; UCI "spam" includes marketing; rules written and revised by one person; no user study yet; OCR barely tested; voice not implemented.
+No real Indian user messages; small Hindi/Hinglish test sets with wide bootstrap 95% confidence intervals (false-alarm rate: Hinglish 0.20, CI 0.09–0.32; Hindi 0.25, CI 0.00–0.53; English 0.009, CI 0.003–0.016; see `reports/BOOTSTRAP_CI.md`); synthetic data written by LLMs; UCI "spam" includes marketing; rules written and revised by one person; no user study yet; OCR barely tested; voice not implemented.
 
 ## 8. Future work **[FUTURE]**
 1. Collect ≥ 300 consented, anonymised real messages; double-label; report Cohen's κ; re-evaluate (the key test of RQ1).

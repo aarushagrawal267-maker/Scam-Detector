@@ -28,6 +28,7 @@ Everything in this table exists in the repository and was tested in this session
 | 16 | Anonymous statistics + private/public dashboard | ✅ Done | `scam_detector/stats.py`, `stats.html` | Test proves message text never reaches the database |
 | 17 | 32 automated tests | ✅ All passing | `tests/` | `python -m pytest` |
 | 18 | Documents: data card, model card, labelling guide, pilot protocol + consent forms (EN/HI), privacy policy, accessibility checklist, impact tracking, deployment guide, outreach plan, competitions, research paper draft, learning guide | ✅ Drafted | `docs/` | Contacts and competition facts checked on official sites 2026-11-17 (some marked NOT VERIFIED) |
+| 19 | Added 24 Nov 2026: MIT licence, Dockerfile (with OCR), README screenshots/API/limitations, upload size + pixel limits (screenshots kept in memory), rate-limiter memory cap, bootstrap 95% confidence intervals | ✅ Done | `Dockerfile`, `app/server.py`, `training/bootstrap_ci.py` → `reports/BOOTSTRAP_CI.md` | 36 tests pass; baseline training + evaluation re-run from scratch reproduced the published numbers |
 
 ### Feature status (the honest list)
 

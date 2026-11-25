@@ -41,7 +41,7 @@ Home page: [`docs/screenshots/home.png`](docs/screenshots/home.png)
 | OCR | Tesseract (called through a pipe, so images never touch the disk), Pillow |
 | Bot | Telegram Bot API over `httpx` (long polling) |
 | Research | pandas, huggingface_hub (dataset download), sentence-transformers (MiniLM), transformers (MuRIL), PyTorch, matplotlib |
-| Tests | pytest (57 tests) |
+| Tests | pytest (58 tests) |
 | Deployment | Dockerfile (includes Tesseract English + Hindi) |
 
 ## How it works
@@ -139,7 +139,7 @@ python -m training.bootstrap_ci   # 95% confidence intervals per language
 | `data/challenge/` | 70 hand-written tricky test cases (never used for training) |
 | `models/` | Trained baseline model + thresholds |
 | `reports/` | Auto-generated results and figures |
-| `tests/` | 57 automated tests, including privacy, upload-limit and security tests |
+| `tests/` | 58 automated tests, including privacy, upload-limit and security tests |
 | `Dockerfile` | Container with the app + Tesseract OCR |
 | `docs/` | **Start with [`LEARNING_GUIDE.md`](docs/LEARNING_GUIDE.md)**, then the [timeline](docs/TIMELINE.md), [data card](docs/DATA_CARD.md), [model card](docs/MODEL_CARD.md), [research paper draft](docs/RESEARCH_PAPER.md), [labelling guide](docs/LABELING_GUIDE.md), [pilot protocol + consent forms](docs/PILOT_PROTOCOL.md), [privacy policy](docs/PRIVACY_POLICY.md), [accessibility checklist](docs/ACCESSIBILITY_CHECKLIST.md), [deployment](docs/DEPLOYMENT.md), [outreach plan](docs/OUTREACH_PLAN.md), [competitions](docs/COMPETITIONS.md), [impact tracking](docs/IMPACT_TRACKING.md), [printable guide (PDF)](docs/printable-guide.pdf) |
 

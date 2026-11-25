@@ -150,11 +150,12 @@ def test_screenshots_stay_in_memory():
 
 
 @pytest.mark.skipif(not ocr_available(), reason="Tesseract not installed")
-def test_too_many_pixels_is_refused(client):
+@pytest.mark.parametrize("side", [5000, 6000])  # 25 M pixels: Pillow only warns; 36 M: Pillow refuses itself
+def test_too_many_pixels_is_refused(client, side):
     from PIL import Image
 
     buf = io.BytesIO()
-    Image.new("1", (5000, 5000), 1).save(buf, format="PNG")  # small file, huge image
+    Image.new("1", (side, side), 1).save(buf, format="PNG")  # small file, huge image
     r = client.post("/api/check-image", files={"file": ("big.png", buf.getvalue(), "image/png")})
     assert r.status_code == 413
 

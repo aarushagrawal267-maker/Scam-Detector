@@ -91,7 +91,7 @@ Why two detectors (rules + ML)? Each covers the other's weakness:
 | `app/server.py` | FastAPI web server: website + JSON API | Rate limit, security headers, no logging of text |
 | `app/static/*` | The website (HTML/CSS/JavaScript) | Large text, high contrast, bilingual |
 | `bot/telegram_bot.py` | The Telegram chat bot | Logic separated from network so it can be tested |
-| `tests/` | 57 automated tests | Includes a privacy test and upload-limit tests |
+| `tests/` | 58 automated tests | Includes a privacy test and upload-limit tests |
 | `data/challenge/challenge_set.csv` | 70 hand-written tricky test cases | Never used for training |
 | `models/baseline.joblib`, `baseline_meta.json` | The trained model (1 MB) and its thresholds | |
 | `reports/RESULTS.md`, `reports/figures/` | All results, generated automatically | |
@@ -111,7 +111,7 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt -r requirements-ml.txt -r requirements-dev.txt
 ```
 ```bash
-python -m pytest                  # 57 tests should pass
+python -m pytest                  # 58 tests should pass
 ```
 ```bash
 python -m training.prepare_data   # download + split data (~1 min)
@@ -159,7 +159,7 @@ If you split randomly, copies of the same template land in both training and tes
 
 **Fix (`prepare_data.py`)**: compute a *template key* for every message (numbers → `0`, links → `URL`, Capitalised words → `W`). All messages with the same key form a **group**, and a group goes entirely into train, or entirely into validation, or entirely into test. The script asserts this, so it would crash if a group crossed splits. We also **cap** each CloveAI template at 15 messages so 121 templates don't drown out everything else.
 
-Evidence that this mattered: in the cross-dataset experiment (§13), a model trained with CloveAI scores a perfect **1.000** on CloveAI's test set but catches only **26%** of the challenge-set scams. Perfect scores on templated data mean nothing.
+Evidence that this mattered: in the cross-dataset experiment (§13), a model trained with CloveAI scores a perfect **1.000** on CloveAI's test set but catches only **24%** of the challenge-set scams. Perfect scores on templated data mean nothing.
 
 ### 4.3 Train / validation / test
 
@@ -463,7 +463,7 @@ The test `test_stats_db_never_contains_message_text` **proves** that after check
 
 ## 19. Testing
 
-`python -m pytest` runs 57 tests:
+`python -m pytest` runs 58 tests:
 - `test_text_and_urls.py`: language detection, link finding, defanging, anonymisation, look-alike domains.
 - `test_rules_and_detector.py`: OTP requests in 3 languages, negation ("do not share"), safe signals, verdicts, Hindi replies, 1930 always present.
 - `test_api_bot_stats.py`: API, rate limit, admin token, screenshot OCR, upload size and pixel limits (screenshots kept in memory, never spooled to disk), the whole bot conversation, and the privacy test.

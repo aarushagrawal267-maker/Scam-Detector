@@ -2,10 +2,17 @@
 __pycache__/
 *.pyc
 .venv/
+venv/
+env/
 .pytest_cache/
+node_modules/
 
 # Secrets: never commit tokens or API keys
 .env
+.env.*
+!.env.example
+*.pem
+*.key
 
 # Data: raw downloads and processed splits are re-created by training/prepare_data.py.
 # Real collected messages must NEVER go into this public repository.
@@ -13,6 +20,17 @@ data/raw/
 data/processed/
 data/collected/
 data/stats.db
+# SQLite files anywhere (the stats DB also holds per-week hashing secrets) and their sidecars
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+# Data dumps / exports
+*.dump
+*.sql
+*.parquet
 
 # Big model files / per-row predictions (re-created by the training scripts)
 models/*.bin

@@ -39,6 +39,7 @@ log = logging.getLogger("scam-bot")
 
 MEMORY_SECONDS = 30 * 60
 PER_CHAT_LIMIT = 20  # checks per minute per chat
+MAX_PHOTO_BYTES = 6 * 1024 * 1024  # same limit as the website
 
 TEXT = {
     "welcome": {
@@ -170,6 +171,9 @@ class BotLogic:
         cutoff = time.time() - MEMORY_SECONDS
         for chat in [c for c, (t, _) in self.last.items() if t < cutoff]:
             del self.last[chat]
+        now = time.monotonic()
+        for chat in [c for c, q in self.hits.items() if not q or now - q[-1] > 60]:
+            del self.hits[chat]
 
     # ------------------------------------------------------------- checks --
     def _check_and_reply(self, chat: int, text: str, channel: str) -> None:
@@ -291,17 +295,37 @@ class TelegramApi:
 
     def file_bytes(self, file_id: str) -> bytes:
         info = self.call("getFile", file_id=file_id)["result"]
-        if info.get("file_size", 0) > 6 * 1024 * 1024:
+        if info.get("file_size", 0) > MAX_PHOTO_BYTES:
             raise ValueError("file too large")
-        return self.http.get(f"{self.file_base}/{info['file_path']}").content
+        # Stream the download and stop at the limit: file_size can be missing.
+        data = bytearray()
+        with self.http.stream("GET", f"{self.file_base}/{info['file_path']}") as r:
+            r.raise_for_status()
+            for chunk in r.iter_bytes():
+                data += chunk
+                if len(data) > MAX_PHOTO_BYTES:
+                    raise ValueError("file too large")
+        return bytes(data)
 
     def updates(self, offset: int | None) -> list[dict]:
         return self.call("getUpdates", offset=offset, timeout=30,
                          allowed_updates=["message", "callback_query"]).get("result", [])
 
 
+def quiet_http_logs() -> None:
+    """Stop httpx logging every request at INFO level.
+
+    Telegram puts the bot token in the URL (https://api.telegram.org/bot<TOKEN>/...),
+    and Google Safe Browsing puts the API key in it, so httpx's
+    "HTTP Request: POST https://..." lines would write the secrets into the logs.
+    """
+    for name in ("httpx", "httpcore"):
+        logging.getLogger(name).setLevel(logging.WARNING)
+
+
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    quiet_http_logs()
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     if not token:
         raise SystemExit("Set the TELEGRAM_BOT_TOKEN environment variable first (see the top of this file).")

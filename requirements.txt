@@ -8,5 +8,4 @@ joblib==1.6.0
 numpy==2.5.5
 scipy==1.18.1
 httpx==0.28.1              # Telegram API + optional Google Safe Browsing
-pytesseract==0.3.13        # screenshot OCR (also needs the tesseract program installed)
-pillow==13.0.0
+pillow==13.0.0             # screenshot OCR (also needs the tesseract program installed)

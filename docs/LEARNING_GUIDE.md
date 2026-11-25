@@ -91,7 +91,7 @@ Why two detectors (rules + ML)? Each covers the other's weakness:
 | `app/server.py` | FastAPI web server: website + JSON API | Rate limit, security headers, no logging of text |
 | `app/static/*` | The website (HTML/CSS/JavaScript) | Large text, high contrast, bilingual |
 | `bot/telegram_bot.py` | The Telegram chat bot | Logic separated from network so it can be tested |
-| `tests/` | 36 automated tests | Includes a privacy test and upload-limit tests |
+| `tests/` | 57 automated tests | Includes a privacy test and upload-limit tests |
 | `data/challenge/challenge_set.csv` | 70 hand-written tricky test cases | Never used for training |
 | `models/baseline.joblib`, `baseline_meta.json` | The trained model (1 MB) and its thresholds | |
 | `reports/RESULTS.md`, `reports/figures/` | All results, generated automatically | |
@@ -111,7 +111,7 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt -r requirements-ml.txt -r requirements-dev.txt
 ```
 ```bash
-python -m pytest                  # 36 tests should pass
+python -m pytest                  # 57 tests should pass
 ```
 ```bash
 python -m training.prepare_data   # download + split data (~1 min)
@@ -463,10 +463,12 @@ The test `test_stats_db_never_contains_message_text` **proves** that after check
 
 ## 19. Testing
 
-`python -m pytest` runs 36 tests:
+`python -m pytest` runs 57 tests:
 - `test_text_and_urls.py`: language detection, link finding, defanging, anonymisation, look-alike domains.
 - `test_rules_and_detector.py`: OTP requests in 3 languages, negation ("do not share"), safe signals, verdicts, Hindi replies, 1930 always present.
 - `test_api_bot_stats.py`: API, rate limit, admin token, screenshot OCR, upload size and pixel limits (screenshots kept in memory, never spooled to disk), the whole bot conversation, and the privacy test.
+- `test_model_and_data.py`: the model loads at start-up, a missing or broken model falls back to rules only, and templates never leak across the train/validation/test splits.
+- `test_security.py`: request bodies over the limit are refused (even without a Content-Length), the link finder stays fast on tricky input like `a.a.a.a...`, OCR never enlarges an image past 16 million pixels, only decodes PNG/JPEG/WebP, never writes the image to disk and is stopped after 60 s, and the bot never writes its token to the logs.
 
 A test once failed only sometimes ("flaky"): it checked that a random hex hash didn't contain "42", which happens by chance about 6% of the time. The fix was to test the right thing (the raw id `tg:42` is not stored). Lesson: a flaky test is a bug in the test.
 

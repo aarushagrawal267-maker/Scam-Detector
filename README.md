@@ -29,7 +29,7 @@ Home page: [`docs/screenshots/home.png`](docs/screenshots/home.png)
 - **Bilingual interface** (English / हिंदी) designed for older users: large text, high contrast, keyboard and screen-reader friendly.
 - **Telegram bot** with the same engine (text, screenshots, language switch, feedback buttons).
 - **Privacy by design**: messages and images are processed in memory and never stored; only anonymous counts feed a public impact dashboard (`/stats.html`).
-- **Safety on the API**: rate limiting, strict security headers (CSP), input size limits, admin-token-protected private dashboard.
+- **Safety on the API**: rate limiting, strict security headers (CSP), input size limits on every request body, OCR limits (pixels, formats, time), admin-token-protected private dashboard, no secrets in logs.
 - **Research pipeline**: reproducible data preparation, baseline training, MiniLM and MuRIL transformer comparisons, fairness-by-language evaluation.
 
 ## Tech stack
@@ -38,10 +38,10 @@ Home page: [`docs/screenshots/home.png`](docs/screenshots/home.png)
 |---|---|
 | Detection engine | Python 3.10+ (tested on 3.13), scikit-learn, NumPy/SciPy, regular-expression rules |
 | Web API + site | FastAPI, Uvicorn, plain HTML/CSS/JavaScript (no framework, no external scripts) |
-| OCR | Tesseract (`pytesseract`, Pillow) |
+| OCR | Tesseract (called through a pipe, so images never touch the disk), Pillow |
 | Bot | Telegram Bot API over `httpx` (long polling) |
 | Research | pandas, huggingface_hub (dataset download), sentence-transformers (MiniLM), transformers (MuRIL), PyTorch, matplotlib |
-| Tests | pytest (36 tests) |
+| Tests | pytest (57 tests) |
 | Deployment | Dockerfile (includes Tesseract English + Hindi) |
 
 ## How it works
@@ -139,7 +139,7 @@ python -m training.bootstrap_ci   # 95% confidence intervals per language
 | `data/challenge/` | 70 hand-written tricky test cases (never used for training) |
 | `models/` | Trained baseline model + thresholds |
 | `reports/` | Auto-generated results and figures |
-| `tests/` | 36 automated tests, including privacy and upload-limit tests |
+| `tests/` | 57 automated tests, including privacy, upload-limit and security tests |
 | `Dockerfile` | Container with the app + Tesseract OCR |
 | `docs/` | **Start with [`LEARNING_GUIDE.md`](docs/LEARNING_GUIDE.md)**, then the [timeline](docs/TIMELINE.md), [data card](docs/DATA_CARD.md), [model card](docs/MODEL_CARD.md), [research paper draft](docs/RESEARCH_PAPER.md), [labelling guide](docs/LABELING_GUIDE.md), [pilot protocol + consent forms](docs/PILOT_PROTOCOL.md), [privacy policy](docs/PRIVACY_POLICY.md), [accessibility checklist](docs/ACCESSIBILITY_CHECKLIST.md), [deployment](docs/DEPLOYMENT.md), [outreach plan](docs/OUTREACH_PLAN.md), [competitions](docs/COMPETITIONS.md), [impact tracking](docs/IMPACT_TRACKING.md), [printable guide (PDF)](docs/printable-guide.pdf) |
 

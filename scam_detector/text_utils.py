@@ -34,12 +34,16 @@ HINGLISH_MARKERS = {
     "shukriya", "naya", "purana", "ghar", "baithe", "kamaye", "kamao", "lijiye",
 }
 
+# The bare-domain branch is bounded (labels of at most 63 characters, as in
+# DNS, and at most 10 labels before the ending). Unbounded, a message such as
+# "a.a.a.a..." made the regex backtrack quadratically: about 1 second of CPU per
+# 5,000-character message, an easy way to tie up the server.
 _URL_RE = re.compile(
     r"""(?xi)
     \b(
         (?:https?://|www\.)[^\s<>"']+                # http://..., https://..., www....
         |
-        (?:[a-z0-9-]+\.)+(?:com|in|net|org|info|xyz|top|online|site|club|live|
+        (?:[a-z0-9-]{1,63}\.){1,10}(?:com|in|net|org|info|xyz|top|online|site|club|live|
             shop|link|click|co|me|io|app|vip|cc|tk|ml|ga|cf|gq|buzz|icu|win|
             loan|work|support|today|store|pw|ly|gl|gd|to|sh)
         (?:/[^\s<>"']*)?                              # bare domains like sbi-kyc.xyz/abc

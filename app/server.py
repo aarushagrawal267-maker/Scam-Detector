@@ -26,6 +26,7 @@ from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+import anyio
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -59,7 +60,7 @@ app = FastAPI(title="AI Scam Message Detector", version=__version__, docs_url="/
 
 
 # ---------------------------------------------------------------- safety ----
-RATE_LIMIT = 30  # requests per minute per IP, for the /api/check* endpoints
+RATE_LIMIT = 30  # requests per minute per IP, for /api/check* and /api/feedback
 _hits: dict[str, deque] = defaultdict(deque)
 _MAX_TRACKED_IPS = 10_000  # forget old entries so memory can't grow forever
 
@@ -70,6 +71,50 @@ MAX_UPLOAD_REQUEST = MAX_IMAGE_BYTES + 64 * 1024
 # bigger than 1 MB to a temporary file on disk, which would break the
 # "images are never written to disk" privacy promise.
 MultiPartParser.spool_max_size = MAX_UPLOAD_REQUEST
+# Every other POST body (JSON: a message of at most 10,000 characters, or a
+# feedback click) is small. Without a cap, FastAPI would read a body of ANY size
+# into memory before checking the 10,000-character limit.
+MAX_JSON_REQUEST = 64 * 1024
+# OCR is slow and memory-hungry (up to 16 million pixels per image), so only a
+# few screenshots are read at the same time; the rest wait their turn.
+_ocr_slots = anyio.CapacityLimiter(2)
+
+
+def _body_limit(path: str) -> int:
+    return MAX_UPLOAD_REQUEST if path == "/api/check-image" else MAX_JSON_REQUEST
+
+
+class BodySizeLimit:
+    """Refuse request bodies over the limit, even when sent without a Content-Length.
+
+    The Content-Length header is checked in ``security_headers`` below; this
+    counts the bytes that actually arrive (for example with chunked uploads).
+    """
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or scope["method"] in ("GET", "HEAD", "OPTIONS"):
+            return await self.app(scope, receive, send)
+        limit = _body_limit(scope["path"])
+        received = 0
+
+        async def limited_receive():
+            nonlocal received
+            message = await receive()
+            if message["type"] == "http.request":
+                received += len(message.get("body", b""))
+                if received > limit:
+                    raise HTTPException(413, "Request is too large.")
+            return message
+
+        await self.app(scope, limited_receive, send)
+
+
+# Added before security_headers, so it sits inside it: the 413 then reaches
+# FastAPI's normal error handling instead of being wrapped in a task group error.
+app.add_middleware(BodySizeLimit)
 
 
 def _rate_limited(request: Request) -> bool:
@@ -93,19 +138,21 @@ def _rate_limited(request: Request) -> bool:
 
 @app.middleware("http")
 async def security_headers(request: Request, call_next):
-    if request.url.path.startswith("/api/check") and _rate_limited(request):
+    path = request.url.path
+    if path.startswith(("/api/check", "/api/feedback")) and _rate_limited(request):
         return JSONResponse({"error": "Too many checks. Please wait a minute."}, status_code=429)
-    if request.url.path == "/api/check-image" and request.method == "POST":
+    if request.method not in ("GET", "HEAD", "OPTIONS"):
         length = request.headers.get("content-length")
-        if length is None or not length.isdigit():
+        if path == "/api/check-image" and (length is None or not length.isdigit()):
             return JSONResponse({"detail": "Upload size missing."}, status_code=411)
-        if int(length) > MAX_UPLOAD_REQUEST:
-            return JSONResponse({"detail": "Image is too large (max 6 MB)."}, status_code=413)
+        if length is not None and length.isdigit() and int(length) > _body_limit(path):
+            msg = "Image is too large (max 6 MB)." if path == "/api/check-image" else "Request is too large."
+            return JSONResponse({"detail": msg}, status_code=413)
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["X-Frame-Options"] = "DENY"
-    if not request.url.path.startswith("/api/docs"):
+    if not path.startswith("/api/docs"):
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; "
             "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
@@ -150,7 +197,8 @@ async def api_check_image(file: UploadFile = File(...), lang: str | None = Form(
         raise HTTPException(415, "Please upload a PNG, JPG or WebP screenshot.")
     data = await file.read()
     try:
-        text = extract_text(data)
+        # In a worker thread, so a slow screenshot doesn't freeze the whole server.
+        text = await anyio.to_thread.run_sync(extract_text, data, limiter=_ocr_slots)
     except OcrUnavailable:
         raise HTTPException(501, "Screenshot reading is not available on this server. Please paste the text instead.")
     except ValueError as e:

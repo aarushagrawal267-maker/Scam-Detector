@@ -125,7 +125,7 @@ def check_message(text: str, lang: str | None = None, online_link_check: bool = 
         "links": links,
         "advice": advice,
         "disclaimer": M.DISCLAIMER[lang],
-        "model_version": load_meta().get("model_version", "unknown"),
+        "model_version": load_meta().get("model_version", "unknown") if p is not None else "rules-only",
     }
     result["reply_text"] = short_reply(result)
     return result

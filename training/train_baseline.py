@@ -37,6 +37,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
+import sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import average_precision_score
@@ -121,6 +122,7 @@ def main() -> None:
         "val_average_precision": round(best_ap, 4),
         "thresholds": th,
         "threshold_rule": f"suspicious: recall>={TARGET_RECALL} on val; scam: precision>={TARGET_PRECISION} on val",
+        "sklearn_version": sklearn.__version__,  # the app warns if a different version loads the model
         "train_rows": int(len(train)),
         "train_sources": train.source.value_counts().to_dict(),
     }

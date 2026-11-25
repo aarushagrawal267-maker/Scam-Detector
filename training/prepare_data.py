@@ -118,9 +118,11 @@ def dedupe_and_group(df: pd.DataFrame) -> pd.DataFrame:
     df["label_conflict_group"] = df["group"].isin(bad)
 
     clove = df[df.source == "clove"]
-    capped = clove.groupby("group", group_keys=False).apply(
-        lambda g: g.sample(min(len(g), CLOVE_CAP_PER_TEMPLATE), random_state=SEED)
-    )
+    # Shuffle, then keep the first N of each template. (Not groupby().apply():
+    # since pandas 3 it drops the "group" column, which silently turned every
+    # CloveAI row into its own group and leaked templates across the splits.)
+    capped = clove.sample(frac=1, random_state=SEED).groupby("group", sort=False).head(CLOVE_CAP_PER_TEMPLATE)
+    assert capped["group"].notna().all(), "lost the template group while capping CloveAI"
     print(f"clove: {len(clove)} rows in {clove.group.nunique()} templates -> capped to {len(capped)}")
     return pd.concat([df[df.source != "clove"], capped], ignore_index=True)
 
@@ -143,12 +145,22 @@ def split(df: pd.DataFrame) -> pd.DataFrame:
     return pd.concat(parts, ignore_index=True)
 
 
+def check_no_leakage(df: pd.DataFrame) -> None:
+    """No template group (and no exact text) may appear in two splits.
+
+    A missing group would be skipped by groupby() and hide a leak, so it is an
+    error too.
+    """
+    assert df["group"].notna().all(), "some rows have no template group"
+    leaks = df.groupby("group")["split"].nunique()
+    assert (leaks == 1).all(), f"{int((leaks > 1).sum())} template groups appear in more than one split!"
+    assert df.groupby("text")["split"].nunique().max() == 1, "the same text appears in more than one split!"
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     df = split(dedupe_and_group(load(download())))
-    # Leakage check: no template group may appear in two splits.
-    leaks = df.groupby("group")["split"].nunique()
-    assert (leaks == 1).all(), "a template group appears in more than one split!"
+    check_no_leakage(df)
     cols = ["text", "label", "source", "language", "category", "group", "split"]
     for name in ("train", "val", "test"):
         part = df[df.split == name][cols]

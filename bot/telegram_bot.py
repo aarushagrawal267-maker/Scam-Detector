@@ -32,6 +32,7 @@ from collections import defaultdict, deque
 from scam_detector import messages as M
 from scam_detector import stats
 from scam_detector.detector import check_message
+from scam_detector.model import model_status
 from scam_detector.ocr import OcrUnavailable, extract_text
 
 log = logging.getLogger("scam-bot")
@@ -311,6 +312,8 @@ def main() -> None:
         {"command": "privacy", "description": "Privacy / गोपनीयता"},
     ])
     logic = BotLogic(api)
+    # Load the model now, so a missing/broken model file is reported at start-up.
+    log.info("Model: %s", model_status()["model_version"])
     offset = None
     log.info("Bot running. Press Ctrl+C to stop.")
     while True:

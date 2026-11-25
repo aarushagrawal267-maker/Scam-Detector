@@ -19,9 +19,11 @@ disk or logs. Only anonymous counts are stored (see scam_detector/stats.py).
 from __future__ import annotations
 
 import hmac
+import logging
 import os
 import time
 from collections import defaultdict, deque
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
@@ -32,13 +34,28 @@ from starlette.formparsers import MultiPartParser
 
 from scam_detector import __version__, stats
 from scam_detector.detector import MAX_CHARS, check_message
-from scam_detector.model import load_meta, load_model
+from scam_detector.model import model_status
 from scam_detector.ocr import MAX_BYTES as MAX_IMAGE_BYTES
 from scam_detector.ocr import OcrUnavailable, extract_text, ocr_available
 
 STATIC = Path(__file__).parent / "static"
+log = logging.getLogger("uvicorn.error")  # shows up in uvicorn's own start-up output
 
-app = FastAPI(title="AI Scam Message Detector", version=__version__, docs_url="/api/docs", redoc_url=None)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the model once at start-up, so a missing or broken model file shows up
+    # in the server log straight away and the first visitor doesn't wait for it.
+    status = model_status()
+    if status["model_loaded"]:
+        log.info("Model %s loaded.", status["model_version"])
+    else:
+        log.warning("Running WITHOUT the machine-learning model (rules only). See the message above.")
+    yield
+
+
+app = FastAPI(title="AI Scam Message Detector", version=__version__, docs_url="/api/docs", redoc_url=None,
+              lifespan=lifespan)
 
 
 # ---------------------------------------------------------------- safety ----
@@ -112,8 +129,7 @@ def health():
     return {
         "status": "ok",
         "version": __version__,
-        "model_loaded": load_model() is not None,
-        "model_version": load_meta().get("model_version"),
+        **model_status(),
         "ocr_available": ocr_available(),
     }
 

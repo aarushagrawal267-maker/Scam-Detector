@@ -1,13 +1,13 @@
 # Model card: deployed scam detector
 
-*Version `tfidf-logreg-2026-11-17`. Files: `models/baseline.joblib`, `models/baseline_meta.json`.*
+*Version `tfidf-logreg-2026-11-25`. Files: `models/baseline.joblib`, `models/baseline_meta.json`.*
 
 ## What it is
 A hybrid of:
 1. **TF-IDF + logistic regression** (scikit-learn): word 1–2-grams (≤ 50k) + character 2–5-grams (≤ 150k), `C = 10`, `class_weight="balanced"`; and
 2. **22 hand-written red-flag rules** + offline link checks (`scam_detector/rules.py`, `urls.py`).
 
-`risk = max(model probability, rule score)`; 🔴 SCAM if risk ≥ 0.6512, 🟡 SUSPICIOUS if ≥ 0.3373, else 🟢 LIKELY SAFE. Thresholds chosen on validation: yellow catches ≥ 97% of validation scams; red is ≥ 97% precise on validation.
+`risk = max(model probability, rule score)`; 🔴 SCAM if risk ≥ 0.6313, 🟡 SUSPICIOUS if ≥ 0.3425, else 🟢 LIKELY SAFE. Thresholds chosen on validation: yellow catches ≥ 97% of validation scams; red is ≥ 97% precise on validation.
 
 ## Intended use
 A **second opinion** for individuals, especially older adults in India, about a single SMS/WhatsApp message, with plain-language reasons and pointers to official help (1930, cybercrime.gov.in, Chakshu).
@@ -22,19 +22,19 @@ A **second opinion** for individuals, especially older adults in India, about a 
 | Metric | Value |
 |---|---|
 | Recall (scams flagged 🔴 or 🟡) | 0.966 |
-| Precision | 0.902 |
-| False-positive rate | 0.036 |
+| Precision | 0.896 |
+| False-positive rate | 0.038 |
 | False-negative rate | 0.034 |
-| Average precision / ROC-AUC | 0.988 / 0.993 |
+| Average precision / ROC-AUC | 0.987 / 0.993 |
 | Challenge set (70 hand-written) | 33/38 scams caught, 0/32 false alarms |
 | Disguised (adversarial) scams | 4/9 caught |
-| Speed / size | ~2 ms per message (CPU) / 1 MB |
+| Speed / size | ~2–3 ms per message (CPU) / 1 MB |
 
 ### By language (false-alarm rate on genuine messages, test)
-English 0.9% · Hinglish 20% · Hindi 25% (12 genuine Hindi messages only) · other code-mixed 8–50% (very small samples).
+English 1.0% · Hinglish 20% · Hindi 33% (12 genuine Hindi messages only) · other code-mixed 8–50% (very small samples).
 
 ## Alternatives compared (not deployed)
-Multilingual MiniLM embeddings + LogReg (FPR 6.9%, 471 MB) and fine-tuned MuRIL (recall 97.3%, FPR 6.1%, ~30 ms, 950 MB). Neither beat the deployed system on false alarms, challenge-set errors, speed or size. All models showed the same higher false-alarm rates on non-English messages.
+Multilingual MiniLM embeddings + LogReg (recall 97.3%, FPR 9.6%, 471 MB) and fine-tuned MuRIL (recall 97.3%, FPR 6.1%, ~30 ms, 950 MB; measured before the 25 Nov 2026 split fix and not yet re-run). Neither beat the deployed system on false alarms, challenge-set errors, speed or size. All models showed the same higher false-alarm rates on non-English messages.
 
 ## Known limitations and risks
 - **Unknown real-world accuracy**: no real Indian user data yet.

@@ -15,7 +15,7 @@ Everything in this table exists in the repository and was tested in this session
 | 3 | Hand-written challenge set (70 tricky cases, 3 languages) | ✅ Done | `data/challenge/challenge_set.csv` | – |
 | 4 | Baseline model: TF-IDF (words + characters) + logistic regression | ✅ Done | `training/train_baseline.py`, `models/baseline.joblib` | Validation-tuned C and thresholds |
 | 5 | Advanced model A: multilingual MiniLM embeddings + logistic regression | ✅ Done (comparison only, not deployed) | `training/train_transformer.py --mode embed` | `reports/RESULTS.md` |
-| 6 | Advanced model B: MuRIL fine-tuned (CPU, 2 epochs, 37 min) | ✅ Done (comparison only, not deployed; weights not kept, 950 MB) | `training/train_transformer.py --mode finetune` | `reports/RESULTS.md` |
+| 6 | Advanced model B: MuRIL fine-tuned (CPU, 2 epochs, 37 min) | ⚠️ Done on the earlier split; needs a re-run after the 25 Nov 2026 split fix (about 3 h on a 4-core CPU, minutes on Colab) | `training/train_transformer.py --mode finetune` | `docs/RESEARCH_PAPER.md` §5.1 (old numbers) |
 | 7 | Red-flag rules in English, Hinglish and Hindi (22 rules + "safe signals") | ✅ Done | `scam_detector/rules.py` | Unit tests + validation error analysis |
 | 8 | Link checker (look-alike brands, shorteners, risky endings, .apk, IP, punycode) + optional Google Safe Browsing | ✅ Offline checks done. Safe Browsing ⚠️ written but **never tested with a real key** | `scam_detector/urls.py` | Unit tests |
 | 9 | Hybrid verdict 🔴/🟡/🟢, scam type, plain-language reasons, advice, in English + Hindi | ✅ Done | `scam_detector/detector.py`, `messages.py` | Unit tests |

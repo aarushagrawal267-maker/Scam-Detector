@@ -241,25 +241,25 @@ Every prediction falls into one of four boxes (the **confusion matrix**). Our de
 |  | Flagged | Not flagged |
 |---|---|---|
 | **Really scam (294)** | TP = 284 ✅ | **FN = 10** ❌ missed scams |
-| **Really safe (867)** | FP = 31 ⚠️ false alarms | TN = 836 ✅ |
+| **Really safe (867)** | FP = 33 ⚠️ false alarms | TN = 834 ✅ |
 
 | Metric | Formula | Our value | Plain meaning |
 |---|---|---|---|
-| **Precision** | TP / (TP + FP) | 284/315 = **0.902** | When we warn, we're right 90% of the time |
+| **Precision** | TP / (TP + FP) | 284/317 = **0.896** | When we warn, we're right 90% of the time |
 | **Recall** | TP / (TP + FN) | 284/294 = **0.966** | We catch 96.6% of scams |
 | **FNR** | FN / (FN + TP) | **0.034** | We miss 3.4% of scams (the dangerous error) |
-| **FPR** | FP / (FP + TN) | 31/867 = **0.036** | 3.6% of safe messages get a false warning |
-| **F1** | 2·P·R / (P + R) | **0.933** | One number balancing precision and recall |
-| Accuracy | (TP + TN) / all | 0.965 | Misleading here, see below |
+| **FPR** | FP / (FP + TN) | 33/867 = **0.038** | 3.8% of safe messages get a false warning |
+| **F1** | 2·P·R / (P + R) | **0.930** | One number balancing precision and recall |
+| Accuracy | (TP + TN) / all | 0.963 | Misleading here, see below |
 
 **Why not just accuracy?** A useless "model" that says *safe* to everything scores 867/1161 = **74.7% accuracy** while catching **zero** scams. Accuracy hides the error that matters.
 
 **Threshold-free metrics:**
-- **Average precision (AP)**: area under the precision-recall curve (1.0 is perfect). Ours: 0.988.
+- **Average precision (AP)**: area under the precision-recall curve (1.0 is perfect). Ours: 0.987.
 - **ROC-AUC**: the chance that a random scam gets a higher score than a random safe message. Ours: 0.993.
 
 ### Quiz 7
-1. Using the table above, compute precision if FP had been 100 instead of 31.
+1. Using the table above, compute precision if FP had been 100 instead of 33.
 2. Which number would you quote to say "we miss few scams"? Which for "we rarely cry wolf"?
 3. Why is accuracy misleading for this problem?
 
@@ -272,11 +272,11 @@ The model gives a probability. **We** decide where to draw the line. Lower thres
 **Why we favour recall:** a missed scam (FN) can cost an elderly person their life savings. A false alarm (FP) costs them a phone call to their bank to double-check. The errors are not equally bad, so the threshold is not 0.5.
 
 **Two thresholds → three verdicts**, both chosen on the **validation** set (`pick_thresholds` in `train_baseline.py`):
-- **SUSPICIOUS ≥ 0.337**: the highest threshold that still flags **≥ 97%** of validation scams (high recall).
-- **SCAM ≥ 0.651**: the lowest threshold where **≥ 97%** of messages above it are really scams (high precision), so a red verdict is rarely wrong.
-- Below 0.337 → **LIKELY SAFE**.
+- **SUSPICIOUS ≥ 0.343**: the highest threshold that still flags **≥ 97%** of validation scams (high recall).
+- **SCAM ≥ 0.631**: the lowest threshold where **≥ 97%** of messages above it are really scams (high precision), so a red verdict is rarely wrong.
+- Below 0.343 → **LIKELY SAFE**.
 
-Result on test: of 294 scams, **273 got 🔴, 11 got 🟡, 10 were missed (🟢)**. Of 867 safe messages, 836 got 🟢, 22 got 🟡 and 9 got 🔴.
+Result on test: of 294 scams, **272 got 🔴, 12 got 🟡, 10 were missed (🟢)**. Of 867 safe messages, 834 got 🟢, 24 got 🟡 and 9 got 🔴.
 
 The yellow band is a design choice for honesty: when the system is unsure, it says so instead of guessing.
 
@@ -316,7 +316,7 @@ The first evaluation showed **42% of genuine Hindi messages** and **29% of genui
 2. "Safe signals" ("visit your nearest branch", "official app", "successfully updated", "do not share") **halve** the rule score...
 3. ...but **never** when the message also asks for an OTP/PIN, a remote-access app, threatens arrest, or has a dangerous link, because scammers can copy polite phrases.
 
-Effect on test: overall false alarms 4.5% → 3.6%, Hindi 42% → 25%, challenge-set false alarms 3 → 0, with recall unchanged. Report this honestly in your paper as "rules were revised once after validation error analysis".
+Effect on test (measured at the time, before the November 2026 fix to the CloveAI split): overall false alarms 4.5% → 3.6%, Hindi 42% → 25%, challenge-set false alarms 3 → 0, with recall unchanged. Report this honestly in your paper as "rules were revised once after validation error analysis".
 
 ### 9.6 Scam type
 Each fired rule votes for its types with its weight; the highest total wins (ties broken by a priority list: the most dangerous types first). If no type-specific rule fired but the model flagged the message → "Type unclear".
@@ -348,7 +348,7 @@ We **never** open links (`urls.py`). Opening a scam link can trigger downloads o
 risk = max(model_probability, rule_score)
 ```
 
-`max` means **either** detector can raise the alarm. That favours recall (catch more scams). The cost is a few more false alarms. Evidence it helps: on the challenge set, the model alone caught **29/38** scams; with rules, **33/38**, and false alarms stayed at **0**.
+`max` means **either** detector can raise the alarm. That favours recall (catch more scams). The cost is a few more false alarms. Evidence it helps: on the challenge set, the model alone caught **28/38** scams; with rules, **33/38**, and false alarms stayed at **0**.
 
 Alternatives you could try (good "future work"): a weighted average, or a small second model that takes both scores as input ("stacking").
 
@@ -357,7 +357,7 @@ Alternatives you could try (good "future work"): a weighted average, or a small 
 ## 12. Transformers
 
 ### 12.1 Embeddings (MiniLM)
-A **sentence embedding** model turns a whole message into 384 numbers that capture its *meaning*, so "send me the code" and "share your OTP" end up close together even with no words in common. `paraphrase-multilingual-MiniLM-L12-v2` was pre-trained on 50+ languages. We keep it **frozen** (no retraining) and train a logistic regression on top. About 7 ms per message on CPU, but the model is 471 MB.
+A **sentence embedding** model turns a whole message into 384 numbers that capture its *meaning*, so "send me the code" and "share your OTP" end up close together even with no words in common. `paraphrase-multilingual-MiniLM-L12-v2` was pre-trained on 50+ languages. We keep it **frozen** (no retraining) and train a logistic regression on top. About 7–10 ms per message on CPU, but the model is 471 MB.
 
 ### 12.2 Fine-tuning MuRIL
 **MuRIL** (Google) is a BERT model pre-trained on 17 Indian languages *including transliterated text* (Hindi written in English letters), which is exactly what Hinglish scams are. **Fine-tuning** means continuing to train *all* of its 237 million weights on our labelled messages for a couple of passes (epochs), with a small learning rate (3e-5) so it adjusts rather than forgets. On a laptop CPU this is slow (about an hour here); on a free Colab T4 GPU, a few minutes.
@@ -367,11 +367,13 @@ To show the fancy model is worth its cost, or isn't. Results (test set, `reports
 
 | Model | Recall | False alarms (FPR) | Challenge false alarms | Speed | Size |
 |---|---|---|---|---|---|
-| **TF-IDF + LogReg + rules (deployed)** | 96.6% | **3.6%** | **0 / 32** | **~2 ms** | **1 MB** |
-| MiniLM embeddings + LogReg | 96.9% | 6.9% | 3 / 32 | ~7 ms | 471 MB |
-| MuRIL fine-tuned (37 min on CPU) | **97.3%** | 6.1% | 5 / 32 | ~30 ms | 950 MB |
+| **TF-IDF + LogReg + rules (deployed)** | 96.6% | **3.8%** | **0 / 32** | **~2–3 ms** | **1 MB** |
+| MiniLM embeddings + LogReg | **97.3%** | 9.6% | 6 / 32 | ~7–10 ms | 471 MB |
+| MuRIL fine-tuned (37 min on CPU)* | **97.3%** | 6.1% | 5 / 32 | ~30 ms | 950 MB |
 
-MuRIL catches a few more test scams but nearly doubles false alarms, and is 15× slower and ~950× bigger. Notice its flag threshold was only **0.03**: fine-tuned transformers are often *over-confident* (probabilities pushed to 0 or 1), so a fair comparison must tune each model's threshold separately, as `evaluate.py` does. **With small, synthetic data, the simple model + rules is the better engineering choice today.** Re-run the comparison (on a Colab GPU, with a few learning rates/epochs) once you have real data.
+*MuRIL was not re-run after the 25 Nov 2026 split fix (about 3 hours on a 4-core CPU; minutes on a Colab GPU), so its numbers come from the earlier split, in which CloveAI templates leaked into training, and are not directly comparable.
+
+The transformers catch a few more test scams but raise far more false alarms, and are much slower and hundreds of times bigger. Notice its flag threshold was only **0.03**: fine-tuned transformers are often *over-confident* (probabilities pushed to 0 or 1), so a fair comparison must tune each model's threshold separately, as `evaluate.py` does. **With small, synthetic data, the simple model + rules is the better engineering choice today.** Re-run the comparison (on a Colab GPU, with a few learning rates/epochs) once you have real data.
 
 ---
 
@@ -379,21 +381,21 @@ MuRIL catches a few more test scams but nearly doubles false alarms, and is 15×
 
 All numbers: `reports/RESULTS.md` (re-generate with `python -m training.evaluate`).
 
-**Headline (deployed system, test set of 1,161):** recall **96.6%**, precision **90.2%**, false-alarm rate **3.6%**, missed-scam rate **3.4%**, about **2 ms** per message, **1 MB** model.
+**Headline (deployed system, test set of 1,161):** recall **96.6%**, precision **89.6%**, false-alarm rate **3.8%**, missed-scam rate **3.4%**, about **2–3 ms** per message, **1 MB** model.
 
 **Challenge set (70 hand-written cases):** caught **33/38 scams**, **0/32 false alarms**; **all 14** scary-looking genuine messages correctly left green; but only **4/9 disguised scams** caught. The misses: "O.T.P" with dots, "the code that came on your phone", the CVV described without the word (English and Hindi), and a friendly-sounding job scam.
 
-**Fairness by language (test):** false-alarm rate English **0.9%**, Hinglish **20%**, Hindi **25%** (only 12 genuine Hindi messages: 3 false alarms). **This is the biggest weakness.** Hindi-speaking seniors, the very users the project is for, would see more false 🟡 warnings. Crucially, **every model shows the same gap**, even MuRIL, which was built for Indian languages (Hindi 50%, Hinglish 30%). So it isn't a "wrong model" problem; it's a **data** problem: too few genuine Hindi/Hinglish examples, and a different scam/safe balance per language. A bigger model can't fix missing data.
+**Fairness by language (test):** false-alarm rate English **1.0%**, Hinglish **20%**, Hindi **33%** (only 12 genuine Hindi messages: 4 false alarms). **This is the biggest weakness.** Hindi-speaking seniors, the very users the project is for, would see more false 🟡 warnings. Crucially, **every model shows the same gap**, even MuRIL, which was built for Indian languages (Hindi 50%, Hinglish 30%, measured on the earlier split). So it isn't a "wrong model" problem; it's a **data** problem: too few genuine Hindi/Hinglish examples, and a different scam/safe balance per language. A bigger model can't fix missing data.
 
-**Scam type shown:** right for **56/112** caught synthetic scams and **26/33** challenge scams. Most errors are "Type unclear", not wrong types.
+**Scam type shown:** right for **56/113** caught synthetic scams and **26/33** challenge scams. Most errors are "Type unclear", not wrong types.
 
 **Research experiment (does Indian data matter?)**, same model, more data:
 
 | Trained on | Catches Indian-style synthetic scams | Challenge-set AP |
 |---|---|---|
 | UCI only (English, UK/SG) | **27%** | 0.64 |
-| + CloveAI (templated Indian) | 41% | 0.79 |
-| + synthetic Indian (multilingual) | **95%** | **0.98** |
+| + CloveAI (templated Indian) | 32% | 0.78 |
+| + synthetic Indian (multilingual) | **95%** | **0.99** |
 
 **Conclusion you can defend:** an English-only spam model is nearly useless on Indian scams, and templated data barely helps. Diverse, realistic Indian examples are what make it work. That's the scientific case for collecting real community data next.
 
@@ -474,8 +476,8 @@ A test once failed only sometimes ("flaky"): it checked that a random hex hash d
 
 Say these yourself, before a judge does:
 1. **No real Indian user data.** All results are on public/synthetic data; real-world accuracy is unknown.
-2. **Small Hindi/Hinglish test sets** (26 and 94) → wide uncertainty (Hindi false-alarm rate 25%, 95% CI 0–53%; see `reports/BOOTSTRAP_CI.md`).
-3. **Higher false alarms for Hindi/Hinglish** (20–25% vs 1% English): a fairness problem.
+2. **Small Hindi/Hinglish test sets** (26 and 94) → wide uncertainty (Hindi false-alarm rate 33%, 95% CI 8–64%; see `reports/BOOTSTRAP_CI.md`).
+3. **Higher false alarms for Hindi/Hinglish** (20–33% vs 1% English): a fairness problem.
 4. **Disguised scams**: only 4/9 caught.
 5. **Scam type** often "unclear".
 6. **Synthetic data** was written by AI models; real scammers may write differently.
@@ -492,7 +494,7 @@ Say these yourself, before a judge does:
 
 **Q: Your recall is 96.6%. Is that good?** A: On this test set, yes. But it's public and synthetic data, so the real-world number is unknown. That's why the next step is collecting real, consented messages.
 
-**Q: What was the hardest bug?** A: Data leakage from templated data. Random splitting would have given near-perfect fake scores. I grouped messages by template so no template is in both training and test.
+**Q: What was the hardest bug?** A: Data leakage from templated data. Random splitting would have given near-perfect fake scores. I grouped messages by template so no template is in both training and test. Then a second, sneakier version of it: because pandas 3 changed how `groupby().apply()` works, the step that capped CloveAI templates silently dropped the template column, so the leakage check had nothing to check and CloveAI templates crossed splits again (CloveAI test scores were a fake-perfect 1.000). A test now fails if any row has no group.
 
 **Q: Why a yellow "suspicious" level?** A: Honesty about uncertainty. A binary yes/no forces the system to pretend it's sure.
 
@@ -556,4 +558,4 @@ Say these yourself, before a judge does:
 
 **Quiz 9:** (1) 1 − (0.35 × 0.75) = 0.7375 → 🔴. (2) Scammers can copy polite phrases; an OTP request is dangerous no matter how polite. (3) So the test set stays an unbiased final exam.
 
-**Quiz 13:** (1) 25%, but it's 3 errors out of only 12 genuine Hindi messages, so the real rate could be much higher or lower. (2) The cross-dataset experiment: 27% → 95% recall on Indian-style scams when Indian data is added. (3) Any two of: "O.T.P" with dots; "the code that came on your phone"; CVV described as "3 digits on the back"; friendly job-offer opener.
+**Quiz 13:** (1) 33%, but it's 4 errors out of only 12 genuine Hindi messages, so the real rate could be much higher or lower. (2) The cross-dataset experiment: 27% → 95% recall on Indian-style scams when Indian data is added. (3) Any two of: "O.T.P" with dots; "the code that came on your phone"; CVV described as "3 digits on the back"; friendly job-offer opener.

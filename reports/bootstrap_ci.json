@@ -8,36 +8,36 @@
       "recall": {
         "value": 0.966,
         "ci_low": 0.943,
-        "ci_high": 0.985
+        "ci_high": 0.986
       },
       "fpr": {
-        "value": 0.036,
-        "ci_low": 0.024,
-        "ci_high": 0.048
+        "value": 0.038,
+        "ci_low": 0.026,
+        "ci_high": 0.051
       },
       "precision": {
-        "value": 0.902,
-        "ci_low": 0.867,
-        "ci_high": 0.932
+        "value": 0.896,
+        "ci_low": 0.86,
+        "ci_high": 0.928
       }
     },
     "en": {
       "n": 970,
       "scams": 201,
       "recall": {
-        "value": 0.96,
-        "ci_low": 0.931,
-        "ci_high": 0.984
+        "value": 0.955,
+        "ci_low": 0.925,
+        "ci_high": 0.981
       },
       "fpr": {
-        "value": 0.009,
-        "ci_low": 0.003,
-        "ci_high": 0.016
+        "value": 0.01,
+        "ci_low": 0.004,
+        "ci_high": 0.018
       },
       "precision": {
-        "value": 0.965,
-        "ci_low": 0.938,
-        "ci_high": 0.989
+        "value": 0.96,
+        "ci_low": 0.932,
+        "ci_high": 0.985
       }
     },
     "hinglish": {
@@ -50,13 +50,13 @@
       },
       "fpr": {
         "value": 0.2,
-        "ci_low": 0.091,
-        "ci_high": 0.32
+        "ci_low": 0.089,
+        "ci_high": 0.319
       },
       "precision": {
         "value": 0.815,
-        "ci_low": 0.7,
-        "ci_high": 0.917
+        "ci_low": 0.698,
+        "ci_high": 0.915
       }
     },
     "hi": {
@@ -68,14 +68,14 @@
         "ci_high": 1.0
       },
       "fpr": {
-        "value": 0.25,
-        "ci_low": 0.0,
-        "ci_high": 0.53
+        "value": 0.333,
+        "ci_low": 0.077,
+        "ci_high": 0.636
       },
       "precision": {
-        "value": 0.812,
-        "ci_low": 0.6,
-        "ci_high": 1.0
+        "value": 0.765,
+        "ci_low": 0.55,
+        "ci_high": 0.947
       }
     }
   }

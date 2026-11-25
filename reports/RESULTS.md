@@ -8,13 +8,11 @@ Test rows: 1161 (294 scam/spam). Challenge set: 70 hand-written cases (38 scams)
 
 | system                                          |   flag threshold |   precision |   recall |    F1 |   FPR |   FNR |    AP |   ROC-AUC |
 |:------------------------------------------------|-----------------:|------------:|---------:|------:|------:|------:|------:|----------:|
-| Rules only                                      |            0.2   |       0.841 |    0.721 | 0.777 | 0.046 | 0.279 | 0.746 |     0.846 |
-| TF-IDF + LogReg                                 |            0.324 |       0.916 |    0.969 | 0.942 | 0.03  | 0.031 | 0.989 |     0.994 |
-| TF-IDF + LogReg + rules (deployed)              |            0.337 |       0.902 |    0.966 | 0.933 | 0.036 | 0.034 | 0.988 |     0.993 |
-| Multilingual MiniLM embeddings + LogReg         |            0.328 |       0.826 |    0.969 | 0.892 | 0.069 | 0.031 | 0.968 |     0.986 |
-| Multilingual MiniLM embeddings + LogReg + rules |            0.438 |       0.832 |    0.963 | 0.893 | 0.066 | 0.037 | 0.968 |     0.986 |
-| MuRIL fine-tuned                                |            0.03  |       0.844 |    0.973 | 0.904 | 0.061 | 0.027 | 0.986 |     0.993 |
-| MuRIL fine-tuned + rules                        |            0.085 |       0.835 |    0.963 | 0.894 | 0.065 | 0.037 | 0.984 |     0.992 |
+| Rules only                                      |            0.2   |       0.846 |    0.745 | 0.792 | 0.046 | 0.255 | 0.746 |     0.856 |
+| TF-IDF + LogReg                                 |            0.324 |       0.907 |    0.966 | 0.936 | 0.033 | 0.034 | 0.988 |     0.994 |
+| TF-IDF + LogReg + rules (deployed)              |            0.343 |       0.896 |    0.966 | 0.93  | 0.038 | 0.034 | 0.987 |     0.993 |
+| Multilingual MiniLM embeddings + LogReg         |            0.289 |       0.775 |    0.973 | 0.863 | 0.096 | 0.027 | 0.956 |     0.983 |
+| Multilingual MiniLM embeddings + LogReg + rules |            0.45  |       0.826 |    0.956 | 0.886 | 0.068 | 0.044 | 0.957 |     0.983 |
 
 ![precision-recall](figures/precision_recall.png)
 
@@ -23,23 +21,21 @@ Test rows: 1161 (294 scam/spam). Challenge set: 70 hand-written cases (38 scams)
 | system                                          |   recall (scams caught) |   FPR (false alarms) |   missed scams |   false alarms |
 |:------------------------------------------------|------------------------:|---------------------:|---------------:|---------------:|
 | Rules only                                      |                   0.868 |                0.031 |              5 |              1 |
-| TF-IDF + LogReg                                 |                   0.763 |                0     |              9 |              0 |
+| TF-IDF + LogReg                                 |                   0.737 |                0     |             10 |              0 |
 | TF-IDF + LogReg + rules (deployed)              |                   0.868 |                0     |              5 |              0 |
-| Multilingual MiniLM embeddings + LogReg         |                   0.868 |                0.094 |              5 |              3 |
-| Multilingual MiniLM embeddings + LogReg + rules |                   0.921 |                0.094 |              3 |              3 |
-| MuRIL fine-tuned                                |                   0.842 |                0.156 |              6 |              5 |
-| MuRIL fine-tuned + rules                        |                   0.868 |                0.125 |              5 |              4 |
+| Multilingual MiniLM embeddings + LogReg         |                   0.895 |                0.188 |              4 |              6 |
+| Multilingual MiniLM embeddings + LogReg + rules |                   0.895 |                0.156 |              4 |              5 |
 
 ## 3. Deployed system in detail
 
-Thresholds (from validation): SUSPICIOUS >= 0.3373, SCAM >= 0.6512.
+Thresholds (from validation): SUSPICIOUS >= 0.3425, SCAM >= 0.6313.
 
 Three-way verdicts on the test set:
 
 |             |   scam |   suspicious |   likely_safe |
 |:------------|-------:|-------------:|--------------:|
-| really safe |      9 |           22 |           836 |
-| really scam |    273 |           11 |            10 |
+| really safe |      9 |           24 |           834 |
+| really scam |    272 |           12 |            10 |
 
 ![confusion matrix](figures/confusion_matrix_test.png)
 
@@ -48,17 +44,17 @@ Three-way verdicts on the test set:
 | source    |   n |   scams |   recall |   FPR (false alarms) |   precision |
 |:----------|----:|--------:|---------:|---------------------:|------------:|
 | uci       | 738 |      92 |    0.913 |                0.006 |       0.955 |
-| synthetic | 226 |     114 |    0.982 |                0.241 |       0.806 |
-| clove     | 197 |      88 |    1     |                0     |       1     |
+| synthetic | 226 |     114 |    0.991 |                0.25  |       0.801 |
+| clove     | 197 |      88 |    0.989 |                0.009 |       0.989 |
 
 ### By language (test). Check for unfair false alarms on Hindi/Hinglish
 
 | language   |   n |   scams |   recall |   FPR (false alarms) |   precision |
 |:-----------|----:|--------:|---------:|---------------------:|------------:|
-| en         | 970 |     201 |    0.96  |                0.009 |       0.965 |
+| en         | 970 |     201 |    0.955 |                0.01  |       0.96  |
 | hinglish   |  94 |      44 |    1     |                0.2   |       0.815 |
-| hi         |  26 |      14 |    0.929 |                0.25  |       0.812 |
-| bn_en      |  23 |      12 |    0.917 |                0.364 |       0.733 |
+| hi         |  26 |      14 |    0.929 |                0.333 |       0.765 |
+| bn_en      |  23 |      12 |    1     |                0.364 |       0.75  |
 | mr_en      |  22 |      10 |    1     |                0.083 |       0.909 |
 | te_en      |  14 |       9 |    1     |                0.4   |       0.818 |
 | ta_en      |  12 |       4 |    1     |                0.5   |       0.5   |
@@ -70,18 +66,16 @@ Small n means large uncertainty: with 12 genuine Hindi messages, one error moves
 | system                                          |   English FPR (n=769) |   Hinglish FPR (n=50) |   Hindi FPR (n=12) |   Other code-mixed FPR (n=36) |
 |:------------------------------------------------|----------------------:|----------------------:|-------------------:|------------------------------:|
 | Rules only                                      |                 0.02  |                  0.26 |              0.167 |                         0.278 |
-| TF-IDF + LogReg                                 |                 0.005 |                  0.16 |              0.333 |                         0.278 |
-| TF-IDF + LogReg + rules (deployed)              |                 0.009 |                  0.2  |              0.25  |                         0.306 |
-| Multilingual MiniLM embeddings + LogReg         |                 0.026 |                  0.32 |              0.333 |                         0.556 |
-| Multilingual MiniLM embeddings + LogReg + rules |                 0.026 |                  0.28 |              0.333 |                         0.528 |
-| MuRIL fine-tuned                                |                 0.021 |                  0.3  |              0.5   |                         0.444 |
-| MuRIL fine-tuned + rules                        |                 0.03  |                  0.32 |              0.333 |                         0.361 |
+| TF-IDF + LogReg                                 |                 0.007 |                  0.18 |              0.333 |                         0.306 |
+| TF-IDF + LogReg + rules (deployed)              |                 0.01  |                  0.2  |              0.333 |                         0.306 |
+| Multilingual MiniLM embeddings + LogReg         |                 0.044 |                  0.44 |              0.333 |                         0.639 |
+| Multilingual MiniLM embeddings + LogReg + rules |                 0.022 |                  0.36 |              0.333 |                         0.556 |
 
 ### By scam category (synthetic test scams only, as other sources have no categories)
 
 | category         |   n |   recall |
 |:-----------------|----:|---------:|
-| delivery_fee     |  25 |     0.92 |
+| delivery_fee     |  25 |     0.96 |
 | fake_bank_kyc    |  17 |     1    |
 | job_offer        |  17 |     1    |
 | otp_theft        |  17 |     1    |
@@ -103,15 +97,15 @@ Adversarial (disguised) scams caught: **4/9**. Hard negatives (scary-looking gen
 
 | text                                                                                                                                  | label   | verdict     |   risk | tests                                      |
 |:--------------------------------------------------------------------------------------------------------------------------------------|:--------|:------------|-------:|:-------------------------------------------|
-| Please share the O.T.P you just received so we can reverse the wrong transaction                                                      | scam    | likely_safe |  0.019 | ADVERSARIAL: O.T.P with dots               |
-| Hello dear, kindly do the needful and send the code that came on your phone. It is for your parcel verification.                      | scam    | likely_safe |  0.239 | ADVERSARIAL: 'code' instead of OTP         |
-| Sir I am calling from your bank's head office. For security we need to verify your card. Just tell me the 3 digit number on the back. | scam    | likely_safe |  0.3   | ADVERSARIAL: CVV without the word CVV      |
-| Hey, is this still your number? I found your profile on a job site, we have a remote role paying 8k a day. Reply to know more.        | scam    | likely_safe |  0.256 | ADVERSARIAL: friendly opener job scam      |
-| नमस्ते, मैं बैंक से बोल रहा हूँ। आपके कार्ड के पीछे लिखे 3 अंक बताइए, कार्ड चालू रखने के लिए ज़रूरी है।                               | scam    | likely_safe |  0.226 | ADVERSARIAL: CVV in Hindi without the word |
+| Please share the O.T.P you just received so we can reverse the wrong transaction                                                      | scam    | likely_safe |  0.024 | ADVERSARIAL: O.T.P with dots               |
+| Hello dear, kindly do the needful and send the code that came on your phone. It is for your parcel verification.                      | scam    | likely_safe |  0.264 | ADVERSARIAL: 'code' instead of OTP         |
+| Sir I am calling from your bank's head office. For security we need to verify your card. Just tell me the 3 digit number on the back. | scam    | likely_safe |  0.288 | ADVERSARIAL: CVV without the word CVV      |
+| Hey, is this still your number? I found your profile on a job site, we have a remote role paying 8k a day. Reply to know more.        | scam    | likely_safe |  0.268 | ADVERSARIAL: friendly opener job scam      |
+| नमस्ते, मैं बैंक से बोल रहा हूँ। आपके कार्ड के पीछे लिखे 3 अंक बताइए, कार्ड चालू रखने के लिए ज़रूरी है।                               | scam    | likely_safe |  0.272 | ADVERSARIAL: CVV in Hindi without the word |
 
 ### Is the scam TYPE we show correct? (only for scams that were caught)
 
-- Synthetic test scams: **56/112** correct type (accuracy 0.5). Note: the synthetic set has only 7 types.
+- Synthetic test scams: **56/113** correct type (accuracy 0.496). Note: the synthetic set has only 7 types.
 - Challenge-set scams: **26/33** correct type (accuracy 0.788).
 
 Most common type mix-ups (synthetic test):
@@ -119,7 +113,7 @@ Most common type mix-ups (synthetic test):
 | true type        | predicted     |   count |
 |:-----------------|:--------------|--------:|
 | electricity_bill | unknown       |      11 |
-| delivery_fee     | unknown       |       9 |
+| delivery_fee     | unknown       |      10 |
 | otp_theft        | unknown       |       9 |
 | job_offer        | unknown       |       7 |
 | lottery_prize    | unknown       |       5 |
@@ -145,30 +139,29 @@ Same TF-IDF + LogReg model (C=10), trained on growing data, threshold 0.5.
 | trained on                       | evaluated on          |    AP |   recall@0.5 |   FPR@0.5 |
 |:---------------------------------|:----------------------|------:|-------------:|----------:|
 | UCI only (English, UK/SG)        | synthetic Indian test | 0.605 |        0.272 |     0.232 |
-| UCI only (English, UK/SG)        | CloveAI test          | 0.704 |        0.83  |     0.349 |
+| UCI only (English, UK/SG)        | CloveAI test          | 0.673 |        0.761 |     0.578 |
 | UCI only (English, UK/SG)        | UCI test              | 0.983 |        0.913 |     0.003 |
 | UCI only (English, UK/SG)        | challenge set         | 0.637 |        0.289 |     0.188 |
-| UCI + CloveAI (templated Indian) | synthetic Indian test | 0.744 |        0.412 |     0.125 |
-| UCI + CloveAI (templated Indian) | CloveAI test          | 1     |        1     |     0     |
-| UCI + CloveAI (templated Indian) | UCI test              | 0.982 |        0.913 |     0.003 |
-| UCI + CloveAI (templated Indian) | challenge set         | 0.793 |        0.263 |     0.094 |
-| UCI + CloveAI + synthetic Indian | synthetic Indian test | 0.984 |        0.947 |     0.134 |
-| UCI + CloveAI + synthetic Indian | CloveAI test          | 1     |        1     |     0     |
-| UCI + CloveAI + synthetic Indian | UCI test              | 0.98  |        0.902 |     0.002 |
-| UCI + CloveAI + synthetic Indian | challenge set         | 0.983 |        0.658 |     0     |
+| UCI + CloveAI (templated Indian) | synthetic Indian test | 0.706 |        0.316 |     0.107 |
+| UCI + CloveAI (templated Indian) | CloveAI test          | 1     |        0.989 |     0     |
+| UCI + CloveAI (templated Indian) | UCI test              | 0.981 |        0.913 |     0.003 |
+| UCI + CloveAI (templated Indian) | challenge set         | 0.783 |        0.237 |     0.062 |
+| UCI + CloveAI + synthetic Indian | synthetic Indian test | 0.984 |        0.947 |     0.116 |
+| UCI + CloveAI + synthetic Indian | CloveAI test          | 1     |        0.989 |     0.009 |
+| UCI + CloveAI + synthetic Indian | UCI test              | 0.98  |        0.891 |     0.002 |
+| UCI + CloveAI + synthetic Indian | challenge set         | 0.987 |        0.658 |     0     |
 
 ## 5. Speed (CPU, one message at a time, this machine)
 
 | system                          |   ms per message |
 |:--------------------------------|-----------------:|
-| Rules only                      |             0.17 |
-| TF-IDF + LogReg                 |             1.14 |
-| Full check_message() (deployed) |             1.43 |
+| Rules only                      |             0.34 |
+| TF-IDF + LogReg                 |             2.68 |
+| Full check_message() (deployed) |             2.95 |
 
 Model details:
 
 - **Rules only**: size_mb=0.03. hand-written red-flag rules + link checks
 - **TF-IDF + LogReg**: size_mb=1.0. word + character TF-IDF, logistic regression
 - **TF-IDF + LogReg + rules (deployed)**: size_mb=1.0. max(model probability, rule score)
-- **Multilingual MiniLM embeddings + LogReg**: size_mb=471, model=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (frozen) + LogisticRegression, C=30, val_average_precision=0.9727, ms_per_message_cpu=7.16, model_size_mb=471. sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (frozen) + LogisticRegression
-- **MuRIL fine-tuned**: size_mb=950, model=google/muril-base-cased fine-tuned, epochs=2, max_len=128, train_rows=5797, device=cpu, train_minutes=36.9, val_average_precision=0.9872, ms_per_message=30.49, model_size_mb=950. google/muril-base-cased fine-tuned
+- **Multilingual MiniLM embeddings + LogReg**: size_mb=471, model=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (frozen) + LogisticRegression, C=10, val_average_precision=0.9731, ms_per_message_cpu=10.39, model_size_mb=471. sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (frozen) + LogisticRegression

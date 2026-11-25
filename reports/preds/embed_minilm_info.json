@@ -1,7 +1,7 @@
 {
   "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (frozen) + LogisticRegression",
-  "C": 30,
-  "val_average_precision": 0.9727,
-  "ms_per_message_cpu": 7.16,
+  "C": 10,
+  "val_average_precision": 0.9731,
+  "ms_per_message_cpu": 10.39,
   "model_size_mb": 471
 }

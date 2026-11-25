@@ -1,13 +1,14 @@
 {
-  "model_version": "tfidf-logreg-2026-11-17",
-  "trained_on": "2026-11-17",
+  "model_version": "tfidf-logreg-2026-11-25",
+  "trained_on": "2026-11-25",
   "C": 10.0,
-  "val_average_precision": 0.9905,
+  "val_average_precision": 0.9904,
   "thresholds": {
-    "suspicious": 0.3373,
-    "scam": 0.6512
+    "suspicious": 0.3425,
+    "scam": 0.6313
   },
   "threshold_rule": "suspicious: recall>=0.97 on val; scam: precision>=0.97 on val",
+  "sklearn_version": "1.9.1",
   "train_rows": 5797,
   "train_sources": {
     "uci": 3685,

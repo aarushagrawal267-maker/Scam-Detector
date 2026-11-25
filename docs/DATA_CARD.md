@@ -28,7 +28,7 @@
 2. **Exact duplicates removed:** 1,194.
 3. **Template grouping:** numbers → `0`, links → `URL`, Capitalised words → `W`. Messages with the same key form one group.
 4. **CloveAI capped** at 15 messages per template (19,230 → 1,378) so 121 templates don't dominate.
-5. **Grouped, stratified split** per source: 70% train / 15% validation / 15% test. A group never crosses splits; an automatic check enforces this.
+5. **Grouped, stratified split** per source: 70% train / 15% validation / 15% test. A group never crosses splits; an automatic check enforces this, and also fails if any row has lost its group (this once happened silently to CloveAI rows, see `tests/test_model_and_data.py`).
 
 ## Final splits
 

@@ -61,13 +61,13 @@ On a held-out test set of 1,161 public/synthetic messages (294 scams):
 | | Deployed system |
 |---|---|
 | Scams caught (recall) | **96.6%** |
-| Warnings that were right (precision) | **90.2%** |
-| Safe messages wrongly flagged | **3.6%** |
-| Speed / model size | ~2 ms per message on a laptop CPU / 1 MB |
+| Warnings that were right (precision) | **89.6%** |
+| Safe messages wrongly flagged | **3.8%** |
+| Speed / model size | ~2–3 ms per message on a laptop CPU / 1 MB |
 
 The most important weaknesses:
 
-- **False alarms on Hindi and Hinglish messages are much higher**: 20–25%, against 0.9% for English. These Hindi/Hinglish test sets are small (26 and 94 messages), so the uncertainty is large: 95% confidence intervals are in [`reports/BOOTSTRAP_CI.md`](reports/BOOTSTRAP_CI.md).
+- **False alarms on Hindi and Hinglish messages are much higher**: 20% (Hinglish) and 33% (Hindi), against 1.0% for English. These Hindi/Hinglish test sets are small (26 and 94 messages), so the uncertainty is large: 95% confidence intervals are in [`reports/BOOTSTRAP_CI.md`](reports/BOOTSTRAP_CI.md).
 - **Only 4 of 9 disguised scams were caught** in the hand-written challenge set.
 - **Accuracy on real messages is unknown.** That is the next step.
 

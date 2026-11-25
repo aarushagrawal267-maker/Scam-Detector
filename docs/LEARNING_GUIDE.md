@@ -57,7 +57,7 @@ message text (or text read from a screenshot by OCR)
    ├─4─ ML model: TF-IDF + logistic regression (model.py)            → probability 0..1
    │
    ├─5─ risk = max(rule score, model probability)
-   ├─6─ risk ≥ 0.651 → 🔴 SCAM | risk ≥ 0.337 → 🟡 SUSPICIOUS | else 🟢 LIKELY SAFE
+   ├─6─ risk ≥ 0.631 → 🔴 SCAM | risk ≥ 0.343 → 🟡 SUSPICIOUS | else 🟢 LIKELY SAFE
    └─7─ build reply: verdict word + emoji, scam type, top reasons, what to do, disclaimer
 ```
 
@@ -308,7 +308,7 @@ Each rule has an id, a **weight** (0–1), and the scam types it points to. The 
 rule score = 1 − (1 − w1)(1 − w2)(1 − w3)...
 ```
 Think of each rule as an independent "chance" the message is a scam. Example: urgency (0.25) + account threat (0.4) + KYC (0.25):
-1 − (0.75 × 0.6 × 0.75) = 1 − 0.3375 = **0.66** → above 0.651 → 🔴. Each alone stays below the SCAM line, but together they cross it. Score can never exceed 1.
+1 − (0.75 × 0.6 × 0.75) = 1 − 0.3375 = **0.66** → above 0.631 → 🔴. Each alone stays below the SCAM line, but together they cross it. Score can never exceed 1.
 
 ### 9.5 Safe signals (and how they came from error analysis)
 The first evaluation showed **42% of genuine Hindi messages** and **29% of genuine synthetic messages** got false alarms. Looking at the **validation** errors (never the test) showed the cause: messages that merely *mentioned* KYC ("please visit your nearest branch to complete re-KYC") triggered the KYC rule (weight 0.45). Fixes:

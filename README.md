@@ -50,7 +50,7 @@ Home page: [`docs/screenshots/home.png`](docs/screenshots/home.png)
 message ─► clean + detect language ─► link checks (never opens links)
         ─► 22 red-flag rules (EN / Hinglish / HI) ─► rule score
         ─► TF-IDF + logistic regression model     ─► scam probability
-        ─► risk = max(both) ─► 🔴 ≥ 0.651 · 🟡 ≥ 0.337 · 🟢 below
+        ─► risk = max(both) ─► 🔴 ≥ 0.631 · 🟡 ≥ 0.343 · 🟢 below
         ─► short reply: verdict, type, top reasons, what to do
 ```
 

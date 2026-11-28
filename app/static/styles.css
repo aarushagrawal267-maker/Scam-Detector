@@ -5,7 +5,11 @@
    - big text (20px base), short lines, lots of space
    - very high contrast (body text is near-black on white: about 18:1)
    - buttons at least 48px tall so they are easy to tap
-   - a verdict is ALWAYS emoji + word + colour, never colour alone
+   - a verdict is ALWAYS shape + word + colour, never colour alone
+     (octagon = scam, triangle = suspicious, circle = likely safe)
+   - quiet chrome: 1px hairlines on cards; only the verdict card gets a
+     strong border. Weights 500/600, one radius scale, 4px spacing grid
+   - signature: the 1930 helpline is always set as a mono figure plate
    - one column on phones; everything fits a 375px-wide screen
    - no external fonts or images, so pages load fast on slow internet
    ===================================================================== */
@@ -32,6 +36,12 @@
   --safe-text: #0c3318;
 
   --bar: #0b3d91;            /* single colour for all chart bars (colour-blind safe) */
+  --hairline: rgba(17, 17, 17, 0.16);   /* quiet card edges */
+  --mono: ui-monospace, "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* One radius scale: plates 4, controls 8, cards 12 */
+  --radius-sm: 4px;
+  --radius-control: 8px;
   --radius: 12px;
 }
 
@@ -68,7 +78,8 @@ body {
   line-height: 1.75;             /* Devanagari needs a little more room */
 }
 
-h1, h2, h3 { line-height: 1.25; margin: 1.2em 0 0.5em; }
+h1, h2, h3 { line-height: 1.25; margin: 1.2em 0 0.5em; font-weight: 600; }
+strong, b { font-weight: 600; }
 h1 { font-size: 1.75rem; }
 h2 { font-size: 1.4rem; }
 h3 { font-size: 1.15rem; }
@@ -98,7 +109,7 @@ a:hover { color: var(--primary-dark); }
 .skip-link {
   position: absolute; left: 8px; top: -100px;
   background: var(--focus); color: var(--text);
-  padding: 12px 16px; font-weight: 700; z-index: 10;
+  padding: 12px 16px; font-weight: 600; z-index: 10;
 }
 .skip-link:focus { top: 8px; }
 
@@ -106,19 +117,20 @@ a:hover { color: var(--primary-dark); }
 .site-header { background: var(--primary); color: #fff; }
 .header-row {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; padding-top: 10px; padding-bottom: 10px;
+  gap: 12px; padding-top: 8px; padding-bottom: 8px;
 }
 .brand {
-  color: #fff; font-weight: 800; font-size: 1.15rem; text-decoration: none;
-  min-height: 48px; display: inline-flex; align-items: center;
+  color: #fff; font-weight: 600; font-size: 1.15rem; text-decoration: none;
+  min-height: 48px; display: inline-flex; align-items: center; gap: 8px;
 }
+.brand .icon { width: 1.3em; height: 1.3em; }
 .brand:hover { color: #fff; text-decoration: underline; }
 
 .lang-toggle {
-  min-height: 48px; min-width: 48px; padding: 6px 16px;
-  font: inherit; font-weight: 700;
+  min-height: 48px; min-width: 48px; padding: 8px 16px;
+  font: inherit; font-weight: 600;
   background: #fff; color: var(--primary);
-  border: 2px solid #fff; border-radius: 999px; cursor: pointer;
+  border: 2px solid #fff; border-radius: var(--radius-control); cursor: pointer;
 }
 .lang-toggle:hover { background: #e8eefb; }
 
@@ -126,13 +138,13 @@ a:hover { color: var(--primary-dark); }
 .nav-list {
   list-style: none; margin: 0 auto;   /* "auto" keeps it centred like .wrap */
   display: flex; flex-wrap: wrap; gap: 4px 8px;
-  padding-top: 6px; padding-bottom: 6px;
+  padding-top: 4px; padding-bottom: 4px;
 }
 .nav-list li { margin: 0; }
 .nav-list a {
   display: inline-flex; align-items: center; min-height: 48px;
-  padding: 4px 10px; color: #fff; font-weight: 600;
-  text-decoration: none; border-radius: 8px;
+  padding: 4px 12px; color: #fff; font-weight: 500;
+  text-decoration: none; border-radius: var(--radius-control);
 }
 .nav-list a:hover { text-decoration: underline; }
 .nav-list a[aria-current="page"] { background: #fff; color: var(--primary-dark); }
@@ -142,7 +154,7 @@ main { padding-bottom: 2rem; }
 .lead { font-size: 1.1rem; color: var(--muted); }
 
 .site-footer {
-  border-top: 4px solid var(--primary);
+  border-top: 2px solid var(--primary);
   background: var(--panel); padding: 1rem 0; margin-top: 2rem;
 }
 .site-footer p { margin: 0.3em 0; }
@@ -150,9 +162,9 @@ main { padding-bottom: 2rem; }
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 56px; padding: 10px 24px;
-  font: inherit; font-size: 1.1rem; font-weight: 700;
-  border-radius: var(--radius); border: 3px solid var(--primary);
+  min-height: 56px; padding: 8px 24px;
+  font: inherit; font-size: 1.1rem; font-weight: 600;
+  border-radius: var(--radius-control); border: 2px solid var(--primary);
   cursor: pointer; text-decoration: none; text-align: center;
 }
 .btn-primary { background: var(--primary); color: #fff; }
@@ -166,19 +178,19 @@ main { padding-bottom: 2rem; }
 
 /* ---------- Check form ---------- */
 .check-card {
-  background: var(--panel); border: 2px solid var(--border);
-  border-radius: var(--radius); padding: 16px; margin: 1rem 0;
+  background: var(--panel); border: 1px solid var(--hairline);
+  border-radius: var(--radius); padding: 20px; margin: 1rem 0;
 }
-.field-label { display: block; font-weight: 700; font-size: 1.15rem; margin-bottom: 6px; }
+.field-label { display: block; font-weight: 600; font-size: 1.15rem; margin-bottom: 8px; }
 .hint { color: var(--muted); margin: 0 0 8px; }
 
 textarea {
   width: 100%; min-height: 9rem; padding: 12px;
   font: inherit; font-size: 1.05rem; color: var(--text); background: #fff;
-  border: 3px solid var(--border); border-radius: 8px; resize: vertical;
+  border: 2px solid var(--border); border-radius: var(--radius-control); resize: vertical;
 }
 
-.or-divider { text-align: center; font-weight: 700; margin: 1rem 0 0.5rem; }
+.or-divider { text-align: center; font-weight: 500; color: var(--muted); margin: 1rem 0 0.6rem; }
 
 /* The real file input is hidden; its <label> is styled as a big button. */
 .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
@@ -189,9 +201,9 @@ textarea {
 .bot-box { margin: 1rem 0; }
 
 /* ---------- Status + errors ---------- */
-.status { font-weight: 700; margin: 0.8rem 0; min-height: 1.6em; }
+.status { font-weight: 600; margin: 0.8rem 0; min-height: 1.6em; }
 .status.loading::before {
-  content: ""; display: inline-block; width: 1em; height: 1em; margin-right: 10px;
+  content: ""; display: inline-block; width: 1em; height: 1em; margin-right: 12px;
   vertical-align: -0.15em; border: 4px solid var(--primary); border-right-color: transparent;
   border-radius: 50%; animation: spin 0.9s linear infinite;
 }
@@ -199,19 +211,25 @@ textarea {
 @media (prefers-reduced-motion: reduce) { .status.loading::before { animation: none; } }
 
 .error-box {
-  border: 3px solid var(--scam-border); background: #fff;
-  padding: 12px 16px; border-radius: 8px; font-weight: 600;
+  border: 2px solid var(--scam-border); background: #fff;
+  padding: 12px 16px; border-radius: var(--radius-control); font-weight: 600;
 }
 
 /* ---------- Result card ---------- */
 .result { margin: 1.2rem 0; }
 .verdict {
-  border-radius: var(--radius); border: 5px solid; padding: 16px; margin-bottom: 1rem;
+  border-radius: var(--radius); border: 4px solid; padding: 20px 24px; margin-bottom: 1rem;
 }
-.verdict-emoji { font-size: 2.6rem; line-height: 1; display: block; margin-bottom: 4px; }
-.verdict-label { font-size: 1.9rem; font-weight: 900; margin: 0; letter-spacing: 0.02em; }
-.verdict-headline { font-size: 1.15rem; font-weight: 600; margin: 0.3em 0 0; }
-.verdict-category { margin: 0.5em 0 0; font-weight: 700; }
+/* The verdict card is the one place with a strong border: it must stand out. */
+.verdict-head { display: flex; align-items: center; gap: 16px; }
+.verdict-mark { display: inline-flex; flex: none; }
+.verdict-mark .glyph { width: 2.4rem; height: 2.4rem; }
+.verdict-label { font-size: 1.9rem; font-weight: 600; line-height: 1.2; margin: 0; letter-spacing: 0.02em; }
+.verdict-headline { font-size: 1.15rem; font-weight: 500; margin: 12px 0 0; }
+.verdict-category {
+  display: inline-block; margin: 12px 0 0; padding: 4px 12px; font-weight: 600;
+  background: #fff; border: 1px solid currentColor; border-radius: var(--radius-sm);
+}
 
 .verdict-scam { background: var(--scam-bg); border-color: var(--scam-border); color: var(--scam-text); }
 .verdict-suspicious { background: var(--sus-bg); border-color: var(--sus-border); color: var(--sus-text);
@@ -219,38 +237,75 @@ textarea {
 .verdict-likely_safe { background: var(--safe-bg); border-color: var(--safe-border); color: var(--safe-text); }
 
 .result-section {
-  border: 2px solid var(--border); border-radius: var(--radius);
-  padding: 4px 16px 8px; margin-bottom: 1rem; background: #fff;
+  border: 1px solid var(--hairline); border-radius: var(--radius);
+  padding: 20px 20px 4px; margin-bottom: 1rem; background: #fff;
 }
-.result-section h2 { font-size: 1.25rem; margin-top: 0.8em; }
+.result-section h2 { font-size: 1.25rem; margin-top: 0; }
 
-.link-item { border-left: 6px solid var(--border); padding-left: 12px; margin-bottom: 0.8em; list-style: none; }
+/* Defanged links: each one is a mono "evidence slip" with a risk rule on the left. */
+.link-list { padding-left: 0; }
+.link-item {
+  list-style: none; border-left: 4px solid var(--border);
+  padding: 4px 0 4px 16px; margin-bottom: 1rem;
+}
 .link-item.risk-high { border-left-color: var(--scam-border); }
 .link-item.risk-medium { border-left-color: var(--sus-border); }
-.link-list { padding-left: 0; }
-.link-url { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.95rem; word-break: break-all; }
+.link-item > p { margin-bottom: 8px; }
+.link-url {
+  font-family: var(--mono); font-size: 0.95rem; word-break: break-all;
+  background: var(--panel); border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm); padding: 8px 12px;
+}
+.link-item.risk-high > p:nth-child(2) strong { color: var(--scam-border); }
+.link-item.risk-medium > p:nth-child(2) strong { color: var(--sus-border); }
 
-.disclaimer { font-weight: 600; background: var(--panel); padding: 12px 16px; border-radius: 8px; }
+.disclaimer { font-weight: 500; background: var(--panel); padding: 12px 16px; border-radius: var(--radius-control); }
 
-.extracted { background: #fff; border: 2px dashed var(--border); padding: 12px; border-radius: 8px; }
+.extracted { background: var(--panel); padding: 12px 16px; border-radius: var(--radius-control); }
 
-.feedback { border-top: 2px solid var(--border); padding-top: 0.5rem; }
-.thanks { font-weight: 700; color: var(--safe-text); }
+.feedback { border-top: 1px solid var(--hairline); padding-top: 12px; }
+.thanks { font-weight: 600; color: var(--safe-text); }
 
-.lang-note { font-style: italic; color: var(--muted); }
+.lang-note { color: var(--muted); }
+
+/* ---------- Icons (inline SVG, one set: 24px grid, 2px stroke) ---------- */
+.icon {
+  width: 1.2em; height: 1.2em; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ---------- Verdict shapes: octagon = scam, triangle = suspicious, circle = safe ---------- */
+.glyph { width: 1.1em; height: 1.1em; flex: none; vertical-align: -0.2em; }
+.glyph-scam { fill: var(--scam-border); }
+.glyph-suspicious { fill: var(--sus-border); }
+.glyph-likely_safe { fill: var(--safe-border); }
+.glyph-mark { fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.with-glyph { display: inline-flex; align-items: center; gap: 8px; }
+
+/* ---------- Signature: the 1930 helpline as a printed figure plate ---------- */
+.helpline {
+  display: inline-block; padding: 0 8px; line-height: 1.5;
+  font-family: var(--mono); font-weight: 600; letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary); background: #fff;
+  border: 1px solid var(--primary); border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+a.helpline:hover { color: #fff; background: var(--primary); }
 
 /* ---------- Generic content cards (common scams, guide) ---------- */
 .card {
-  border: 2px solid var(--border); border-radius: var(--radius);
-  padding: 8px 16px 12px; margin: 1rem 0; background: #fff;
+  border: 1px solid var(--hairline); border-radius: var(--radius);
+  padding: 20px 20px 0; margin: 1rem 0; background: #fff;
 }
-.card h2 { margin-top: 0.6em; }
+.card h2 { margin-top: 0; }
 .example {
-  background: var(--panel); border-left: 6px solid var(--scam-border);
-  padding: 10px 14px; margin: 0.5em 0 1em; border-radius: 4px;
+  background: var(--panel); border-left: 4px solid var(--scam-border);
+  padding: 12px 16px; margin: 0.6em 0 1em; border-radius: var(--radius-sm);
 }
-.example-tag { display: block; font-size: 0.85rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
-.example-text { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.95rem; margin: 0; }
+.example-tag { display: block; font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.example-text { font-family: var(--mono); font-size: 0.95rem; margin: 0; }
 
 .toc { columns: 1; }
 @media (min-width: 640px) { .toc { columns: 2; } }
@@ -259,49 +314,60 @@ textarea {
 .steps { list-style: none; padding: 0; counter-reset: step; }
 .step {
   display: flex; gap: 16px; align-items: flex-start;
-  border: 2px solid var(--border); border-radius: var(--radius);
-  padding: 12px 16px; margin-bottom: 1rem; background: #fff;
+  border: 1px solid var(--hairline); border-radius: var(--radius);
+  padding: 16px 20px; margin-bottom: 1rem; background: #fff;
 }
 .step-icon { flex: 0 0 72px; width: 72px; height: 72px; }
-.step-num { font-weight: 900; font-size: 1.3rem; display: block; color: var(--primary); }
+.step-num { font-weight: 600; font-size: 1.3rem; display: block; color: var(--primary); }
 
 .legend { list-style: none; padding: 0; }
-.legend li { border-radius: var(--radius); border: 4px solid; padding: 10px 14px; margin-bottom: 0.8rem; }
+.legend li { border-radius: var(--radius); border: 2px solid; padding: 12px 16px; margin-bottom: 0.8rem; }
 .legend .verdict-suspicious { border-style: dashed; }
-.legend-word { font-weight: 900; font-size: 1.2rem; }
+.legend li p:last-child { margin-bottom: 0; }
+.legend-word { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.2rem; }
 
 /* ---------- Stats dashboard ---------- */
 .stat-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 12px; margin: 1rem 0; }
-.tile { border: 2px solid var(--border); border-radius: var(--radius); padding: 12px; background: #fff; }
-.tile-number { font-size: 2rem; font-weight: 900; line-height: 1.1; display: block; }
-.tile-label { color: var(--muted); font-weight: 600; }
+.tile { border: 1px solid var(--hairline); border-radius: var(--radius); padding: 16px; background: #fff; }
+.tile-number {
+  font-size: 2rem; font-weight: 600; line-height: 1.2; display: block; margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.tile-label { color: var(--muted); font-weight: 500; }
+.tile-label .l-en, .tile-label .l-hi { display: inline-flex; align-items: center; gap: 8px; }
 
 .bars { list-style: none; padding: 0; margin: 0 0 1rem; }
-.bar-row { margin-bottom: 0.7rem; }
-.bar-label { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; }
+.bar-row { margin-bottom: 0.8rem; }
+.bar-label {
+  display: flex; justify-content: space-between; gap: 8px; font-weight: 500;
+  font-variant-numeric: tabular-nums; margin-bottom: 4px;
+}
+.bar-label .with-glyph { font-weight: 600; }
 .bar-label span:last-child { white-space: nowrap; }   /* keep "7 (78%)" on one line */
-.bar-track { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; height: 22px; }
+.bar-track { background: var(--panel); border: 1px solid var(--hairline); border-radius: var(--radius-sm); height: 24px; }
 /* width is set from JavaScript (CSSOM), which the security policy allows */
-.bar-fill { background: var(--bar); height: 100%; border-radius: 5px 0 0 5px; min-width: 2px; }
-.empty { color: var(--muted); font-style: italic; }
+.bar-fill { background: var(--bar); height: 100%; border-radius: 3px 0 0 3px; min-width: 2px; }
+.empty { color: var(--muted); }
 
 /* ---------- Privacy page ---------- */
-.policy h2 { border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+.policy h2 { border-bottom: 1px solid var(--hairline); padding-bottom: 4px; }
+.meta { color: var(--muted); }
 
 /* ---------- Printable guide (screen view) ---------- */
 .print-actions { margin: 1rem 0; }
 .sheet {
-  border: 2px solid var(--border); background: #fff; padding: 16px; margin: 1rem 0;
-  font-size: 0.9rem;
+  border: 1px solid var(--hairline); border-radius: var(--radius); background: #fff;
+  padding: 24px; margin: 1rem 0; font-size: 0.9rem;
 }
 .sheet h1 { font-size: 1.5rem; margin-top: 0.2em; }
 .sheet h2 { font-size: 1.1rem; margin: 0.8em 0 0.3em; }
 .sheet ul, .sheet ol { margin-bottom: 0.5em; }
 .sheet li { margin-bottom: 0.15em; }
 .sheet-help {
-  border: 3px solid var(--scam-border); padding: 8px 12px; border-radius: 8px; font-weight: 700;
+  border: 2px solid var(--scam-border); padding: 8px 16px; border-radius: var(--radius-control); font-weight: 600;
 }
-.sheet-help .big { font-size: 1.6rem; font-weight: 900; }
+.helpline-big { font-size: 1.6rem; padding: 0 12px; }
+.sheet-glyphs { white-space: nowrap; }
 .sheet-cols { display: grid; grid-template-columns: 1fr; gap: 0 20px; }
 @media (min-width: 700px) { .sheet-cols { grid-template-columns: 1fr 1fr; } }
 .sheet-foot { font-size: 0.8rem; color: var(--muted); margin-top: 0.6em; }
@@ -315,7 +381,7 @@ textarea {
   .wrap { max-width: none; padding: 0; }
   main { padding: 0; }
   .sheet {
-    border: none; margin: 0; padding: 0; font-size: 13.5pt; line-height: 1.5;
+    border: none; border-radius: 0; margin: 0; padding: 0; font-size: 13.5pt; line-height: 1.5;
     break-after: page; page-break-after: always;
   }
   .sheet:last-of-type { break-after: auto; page-break-after: auto; }

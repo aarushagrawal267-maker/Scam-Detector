@@ -29,8 +29,8 @@ because our users are older, the row says so. Verify against the current WCAG ve
 
 | ✅/❌ | Item | Target | How to test it |
 |---|---|---|---|
-| | Never colour alone (WCAG 1.4.1) | Every verdict has **emoji + WORD + colour**: 🔴 SCAM / 🟡 SUSPICIOUS / 🟢 LIKELY SAFE (Hindi: धोखा / संदिग्ध / शायद सुरक्षित) | Switch the screen to greyscale: Android *Settings → Accessibility → Colour correction / Greyscale* (names vary by phone). Can you still tell the verdicts apart? |
-| | Colour-blind safe | Red and green verdicts differ by **word and icon**, not just hue | Chrome DevTools → ⋮ → *More tools → Rendering* → **Emulate vision deficiencies** (protanopia, deuteranopia, tritanopia, achromatopsia) |
+| | Never colour alone (WCAG 1.4.1) | On the website every verdict has **shape + WORD + colour**: octagon SCAM / triangle SUSPICIOUS / circle LIKELY SAFE (Hindi: धोखा / संदिग्ध / शायद सुरक्षित). The shapes are inline SVG and also appear in the guide legend, the stats page and the printable guide. The chat bot and the API still send the emoji 🔴 / 🟡 / 🟢 + WORD | Switch the screen to greyscale: Android *Settings → Accessibility → Colour correction / Greyscale* (names vary by phone). Can you still tell the verdicts apart? |
+| | Colour-blind safe | Red and green verdicts differ by **word and shape** (octagon vs circle), not just hue | Chrome DevTools → ⋮ → *More tools → Rendering* → **Emulate vision deficiencies** (protanopia, deuteranopia, tritanopia, achromatopsia) |
 | | Green is never "safe" | Green text always reads "LIKELY SAFE, not a guarantee" | Read every green-result screen and bot reply |
 | | Printed guide works in black and white | Verdicts distinguishable on a black-and-white photocopy | Print one copy in greyscale and look at it |
 
@@ -43,7 +43,7 @@ because our users are older, the row says so. Verify against the current WCAG ve
 | | Buttons have names | Icon-only buttons have an `aria-label` | axe DevTools; TalkBack: swipe to each button and listen |
 | | Images have alt text | Meaningful images have short `alt`; decorative images `alt=""` | axe DevTools |
 | | Result is announced | The result area is an `aria-live="polite"` region, **or** focus moves to the result heading, so screen-reader users hear the verdict without searching | Turn on **TalkBack** (Android *Settings → Accessibility → TalkBack*), check a message, and listen |
-| | Emoji are not the only content | Screen readers say "red circle". The **word** (SCAM) must come right after it | TalkBack |
+| | Shapes and emoji are not the only content | On the website the shape is decorative (`aria-hidden`), so screen readers read only the **word**. In bot replies screen readers say "red circle", so the **word** (SCAM) must come right after it | TalkBack |
 | | Headings in order | One `<h1>`, then `<h2>`… with no skipped levels | axe DevTools; *HeadingsMap* extension |
 
 ## 4. Using it with fingers, keyboard and limited dexterity

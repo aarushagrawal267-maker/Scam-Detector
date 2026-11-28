@@ -152,7 +152,7 @@
 
   function addItem(list, text) {
     var li = document.createElement("li");
-    li.textContent = text;
+    window.ScamUI.setTextWithHelpline(li, text);
     list.appendChild(li);
     return li;
   }
@@ -162,11 +162,14 @@
     last.verdict = result.verdict;
     last.lang = lang;
 
-    // 1. Verdict box: colour comes from the CSS class, plus emoji + word.
+    // 1. Verdict box: colour comes from the CSS class, plus shape + word.
     var box = $("verdict");
     box.className = "verdict verdict-" + result.verdict;
     box.lang = lang;
-    $("verdict-emoji").textContent = result.emoji || "";
+    var mark = $("verdict-mark");
+    clearChildren(mark);
+    var glyph = window.ScamUI.verdictGlyph(result.verdict);
+    if (glyph) mark.appendChild(glyph);
     $("verdict-label").textContent = result.label || "";
     $("verdict-headline").textContent = result.headline || "";
     var cat = $("verdict-category");

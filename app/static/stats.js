@@ -14,9 +14,9 @@
   // Friendly names for the codes the server uses, in both languages.
   var NAMES = {
     verdict: {
-      scam: { en: "🔴 SCAM", hi: "🔴 धोखा (स्कैम)" },
-      suspicious: { en: "🟡 SUSPICIOUS", hi: "🟡 संदिग्ध" },
-      likely_safe: { en: "🟢 LIKELY SAFE", hi: "🟢 शायद सुरक्षित" }
+      scam: { en: "SCAM", hi: "धोखा (स्कैम)" },
+      suspicious: { en: "SUSPICIOUS", hi: "संदिग्ध" },
+      likely_safe: { en: "LIKELY SAFE", hi: "शायद सुरक्षित" }
     },
     category: {
       fake_bank_kyc: { en: "Fake bank / KYC alert", hi: "नकली बैंक / KYC मैसेज" },
@@ -93,7 +93,8 @@
     document.getElementById(id).textContent = value;
   }
 
-  // Draw one list of bars. `rows` is an array of [label, count].
+  // Draw one list of bars. `rows` is an array of [label, count, verdict?].
+  // When a verdict key is given, its shape is drawn before the label.
   function drawBars(listId, rows) {
     var list = document.getElementById(listId);
     while (list.firstChild) list.removeChild(list.firstChild);
@@ -116,7 +117,12 @@
       var label = document.createElement("div");
       label.className = "bar-label";
       var name = document.createElement("span");
-      name.textContent = row[0];
+      var glyph = row[2] && window.ScamUI ? window.ScamUI.verdictGlyph(row[2]) : null;
+      if (glyph) {
+        name.className = "with-glyph";
+        name.appendChild(glyph);
+      }
+      name.appendChild(document.createTextNode(row[0]));
       var count = document.createElement("span");
       var pct = total ? Math.round((row[1] / total) * 100) : 0;
       count.textContent = fmt(row[1]) + " (" + pct + "%)";
@@ -140,10 +146,10 @@
     });
   }
 
-  // Turn {"scam": 4, "suspicious": 2} into [["🔴 SCAM", 4], ...]
+  // Turn {"scam": 4, "suspicious": 2} into [["SCAM", 4, "scam"], ...]
   function rowsFrom(obj, group) {
     return Object.keys(obj || {}).map(function (key) {
-      return [nameFor(group, key), obj[key]];
+      return [nameFor(group, key), obj[key], group === "verdict" ? key : null];
     });
   }
 
